@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "date": "2026-04-20",
-  "changelog": "Versão inicial pública: multi-select de tags, busca, widget embeddável, fix de SPAs.",
+  "changelog": "Estética minimalista inspirada no GitHub: layout com separadores ao invés de cards, tipografia system-font, tags sutis, botão de toggle para destaques.",
   "download": "https://github.com/od3zza/eugrifo/releases/latest",
   "widget_url": "https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"
 }
