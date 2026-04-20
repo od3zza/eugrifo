@@ -451,18 +451,18 @@
       root.querySelectorAll('.hw-tag').forEach(btn => {
         btn.classList.toggle('hw-tag-active', activeTags.has(btn.dataset.tag));
       });
-      const toggle = root.querySelector('.hw-tags-toggle');
-      const count  = activeTags.size;
-      toggle.textContent = count > 0 ? `${t.tagsActive} (${count}) ✕` : `${t.tags} ↓`;
+      const toggle = root.querySelector('.hw-s-toggle');
+      const count  = actives.size;
+      toggle.textContent = count > 0 ? `${t.sActive} (${count}) ✕` : `${t.s} ↓`;
       toggle.classList.toggle('has-active', count > 0);
     }
 
-    function refreshTagsVisibility() {
-      root.querySelector('.hw-tags').classList.toggle('hw-tags-hidden', !tagsVisible);
+    function refreshsVisibility() {
+      root.querySelector('.hw-s').classList.toggle('hw-s-hidden', !sVisible);
     }
 
-    const tagButtons = allTags.map(tag =>
-      `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
+    const Buttons = alls.map( =>
+      `<button class="hw-" data-="${esc()}">${esc(tag)}</button>`
     ).join('');
 
     root.innerHTML = `
