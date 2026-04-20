@@ -40,24 +40,26 @@
 
   const copy = {
     pt: {
-      loading: 'Carregando destaques…',
-      empty:   'Nenhum destaque encontrado.',
-      noMatch: 'Nenhum resultado para esta busca.',
-      search:  'Buscar nos destaques…',
-      all:     'todos',
-      read:    'ler artigo ↗',
-      credit:  'feito com highlights',
-      error:   'Não foi possível carregar os destaques.',
+      loading:    'Carregando destaques…',
+      empty:      'Nenhum destaque encontrado.',
+      noMatch:    'Nenhum resultado para esta busca.',
+      search:     'Buscar nos destaques…',
+      tags:       'filtrar por tag',
+      tagsActive: 'tags ativas',
+      read:       'ler artigo ↗',
+      credit:     'feito com eugrifo',
+      error:      'Não foi possível carregar os destaques.',
     },
     en: {
-      loading: 'Loading highlights…',
-      empty:   'No highlights yet.',
-      noMatch: 'No results for this search.',
-      search:  'Search highlights…',
-      all:     'all',
-      read:    'read article ↗',
-      credit:  'made with highlights',
-      error:   'Could not load highlights.',
+      loading:    'Loading highlights…',
+      empty:      'No highlights yet.',
+      noMatch:    'No results for this search.',
+      search:     'Search highlights…',
+      tags:       'filter by tag',
+      tagsActive: 'active tags',
+      read:       'read article ↗',
+      credit:     'made with eugrifo',
+      error:      'Could not load highlights.',
     },
   };
   const t = copy[cfg.lang] || copy.pt;
@@ -114,11 +116,40 @@
     .hw-search::placeholder { color: var(--hw-muted); }
     .hw-search:focus { border-color: var(--hw-accent); }
 
+    .hw-tags-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hw-tags-toggle {
+      flex-shrink: 0;
+      padding: 5px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--hw-border);
+      background: transparent;
+      color: var(--hw-muted);
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .hw-tags-toggle:hover { border-color: var(--hw-accent); color: var(--hw-text); }
+    .hw-tags-toggle.has-active {
+      background: var(--hw-accent);
+      border-color: var(--hw-accent);
+      color: #1a1410;
+      font-weight: 600;
+    }
+
     .hw-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      margin-top: 10px;
     }
+    .hw-tags.hw-tags-hidden { display: none; }
+
     .hw-tag {
       padding: 5px 14px;
       border-radius: 999px;
@@ -130,7 +161,7 @@
       cursor: pointer;
       transition: all .15s;
     }
-    .hw-tag:hover         { border-color: var(--hw-accent); color: var(--hw-text); }
+    .hw-tag:hover { border-color: var(--hw-accent); color: var(--hw-text); }
     .hw-tag.hw-tag-active {
       background: var(--hw-accent);
       border-color: var(--hw-accent);
@@ -275,7 +306,6 @@
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   function render(root, raw) {
-    // Transforma o objeto em array e ordena por data
     const articles = Object.entries(raw)
       .map(([url, article]) => ({ url, ...article }))
       .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -285,15 +315,22 @@
       return;
     }
 
-    // Coleta todas as tags únicas
     const allTags = [...new Set(articles.flatMap(a => a.tags || []))].sort();
 
-    let activeTag  = '';
+    // Estado do filtro — agora é um Set de tags ativas (multi-select)
+    let activeTags = new Set();
     let searchTerm = '';
+    let tagsVisible = false;
 
     function filtered() {
       return articles.filter(a => {
-        if (activeTag && !(a.tags || []).includes(activeTag)) return false;
+        // Multi-tag: artigo precisa ter TODAS as tags ativas
+        if (activeTags.size > 0) {
+          const articleTags = new Set(a.tags || []);
+          for (const tag of activeTags) {
+            if (!articleTags.has(tag)) return false;
+          }
+        }
         if (searchTerm) {
           const q = searchTerm.toLowerCase();
           const inTitle = (a.title || '').toLowerCase().includes(q);
@@ -347,17 +384,33 @@
         : `<div class="hw-state">🔍 ${t.noMatch}</div>`;
     }
 
-    const tagButtons = [
-      `<button class="hw-tag hw-tag-active" data-tag="">${t.all}</button>`,
-      ...allTags.map(tag =>
-        `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
-      )
-    ].join('');
+    function refreshTagButtons() {
+      root.querySelectorAll('.hw-tag').forEach(btn => {
+        btn.classList.toggle('hw-tag-active', activeTags.has(btn.dataset.tag));
+      });
+      const toggle = root.querySelector('.hw-tags-toggle');
+      const count  = activeTags.size;
+      toggle.textContent = count > 0 ? `${t.tagsActive} (${count}) ✕` : `${t.tags} ↓`;
+      toggle.classList.toggle('has-active', count > 0);
+    }
+
+    function refreshTagsVisibility() {
+      root.querySelector('.hw-tags').classList.toggle('hw-tags-hidden', !tagsVisible);
+    }
+
+    const tagButtons = allTags.map(tag =>
+      `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
+    ).join('');
 
     root.innerHTML = `
       <div class="hw-controls">
         <input class="hw-search" type="search" placeholder="${t.search}" autocomplete="off">
-        ${allTags.length ? `<div class="hw-tags">${tagButtons}</div>` : ''}
+        ${allTags.length ? `
+          <div class="hw-tags-row">
+            <button class="hw-tags-toggle">${t.tags} ↓</button>
+          </div>
+          <div class="hw-tags hw-tags-hidden">${tagButtons}</div>
+        ` : ''}
       </div>
       <div class="hw-list"></div>
       <div class="hw-footer">
@@ -367,16 +420,47 @@
 
     refreshList();
 
+    // Busca — limpa tags ativas ao digitar
     root.querySelector('.hw-search').addEventListener('input', e => {
       searchTerm = e.target.value.trim();
+      if (searchTerm && activeTags.size > 0) {
+        activeTags.clear();
+        refreshTagButtons();
+      }
       refreshList();
     });
 
+    // Toggle de visibilidade das tags
+    root.querySelector('.hw-tags-toggle')?.addEventListener('click', () => {
+      // Se há tags ativas, clicar no toggle as limpa (e fecha)
+      if (activeTags.size > 0) {
+        activeTags.clear();
+        tagsVisible = false;
+        refreshTagButtons();
+        refreshTagsVisibility();
+        refreshList();
+        return;
+      }
+      tagsVisible = !tagsVisible;
+      root.querySelector('.hw-tags-toggle').textContent = tagsVisible
+        ? `${t.tags} ↑`
+        : `${t.tags} ↓`;
+      refreshTagsVisibility();
+    });
+
+    // Clique nas tags — multi-select, toggle individual
     root.querySelectorAll('.hw-tag').forEach(btn => {
       btn.addEventListener('click', () => {
-        root.querySelectorAll('.hw-tag').forEach(b => b.classList.remove('hw-tag-active'));
-        btn.classList.add('hw-tag-active');
-        activeTag = btn.dataset.tag;
+        const tag = btn.dataset.tag;
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+        } else {
+          activeTags.add(tag);
+          // Limpa a busca ao selecionar uma tag
+          const searchEl = root.querySelector('.hw-search');
+          if (searchEl) { searchEl.value = ''; searchTerm = ''; }
+        }
+        refreshTagButtons();
         refreshList();
       });
     });
