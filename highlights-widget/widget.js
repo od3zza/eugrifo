@@ -80,17 +80,18 @@
   const CSS = `
     .hw {
       --hw-accent:   ${cfg.accent};
-      --hw-bg:       ${isDark ? '#141414' : '#ffffff'};
-      --hw-surface:  ${isDark ? '#1e1e1e' : '#f8f8f6'};
-      --hw-border:   ${isDark ? '#2a2a2a' : '#e8e4df'};
-      --hw-text:     ${isDark ? '#e2ddd8' : '#2a2520'};
-      --hw-muted:    ${isDark ? '#6b6560' : '#8a8480'};
-      --hw-radius:   10px;
+      --hw-bg:       ${isDark ? '#0d1117' : '#ffffff'};
+      --hw-surface:  ${isDark ? '#161b22' : '#f6f8fa'};
+      --hw-border:   ${isDark ? '#30363d' : '#d0d7de'};
+      --hw-text:     ${isDark ? '#e6edf3' : '#1f2328'};
+      --hw-muted:    ${isDark ? '#7d8590' : '#656d76'};
+      --hw-radius:   6px;
 
-      font-family: 'Georgia', 'Times New Roman', serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
       color: var(--hw-text);
       background: var(--hw-bg);
-      line-height: 1.6;
+      line-height: 1.5;
     }
     .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
@@ -98,205 +99,201 @@
     .hw-controls {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 28px;
+      gap: 10px;
+      margin-bottom: 24px;
     }
     .hw-search {
       width: 100%;
-      padding: 11px 16px;
-      background: var(--hw-surface);
+      padding: 5px 12px;
+      background: var(--hw-bg);
       border: 1px solid var(--hw-border);
       border-radius: var(--hw-radius);
       font-size: 14px;
       font-family: inherit;
       color: var(--hw-text);
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .15s, box-shadow .15s;
     }
     .hw-search::placeholder { color: var(--hw-muted); }
-    .hw-search:focus { border-color: var(--hw-accent); }
+    .hw-search:focus {
+      border-color: #0969da;
+      box-shadow: 0 0 0 3px rgba(9,105,218,.12);
+    }
 
     .hw-tags-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .hw-tags-toggle {
       flex-shrink: 0;
-      padding: 5px 13px;
-      border-radius: 999px;
+      padding: 3px 10px;
+      border-radius: var(--hw-radius);
       border: 1px solid var(--hw-border);
-      background: transparent;
+      background: var(--hw-surface);
       color: var(--hw-muted);
       font-size: 12px;
       font-family: inherit;
       cursor: pointer;
-      transition: all .15s;
+      transition: all .12s;
       white-space: nowrap;
     }
-    .hw-tags-toggle:hover { border-color: var(--hw-accent); color: var(--hw-text); }
+    .hw-tags-toggle:hover { border-color: var(--hw-muted); color: var(--hw-text); }
     .hw-tags-toggle.has-active {
-      background: var(--hw-accent);
-      border-color: var(--hw-accent);
-      color: #1a1410;
-      font-weight: 600;
+      background: ${isDark ? '#1f6feb' : '#0969da'};
+      border-color: ${isDark ? '#1f6feb' : '#0969da'};
+      color: #fff;
     }
 
     .hw-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
+      margin-top: 6px;
     }
     .hw-tags.hw-tags-hidden { display: none; }
 
     .hw-tag {
-      padding: 5px 14px;
+      padding: 2px 10px;
       border-radius: 999px;
       border: 1px solid var(--hw-border);
-      background: transparent;
+      background: var(--hw-surface);
       color: var(--hw-muted);
       font-size: 12px;
       font-family: inherit;
       cursor: pointer;
-      transition: all .15s;
+      transition: all .12s;
     }
-    .hw-tag:hover { border-color: var(--hw-accent); color: var(--hw-text); }
+    .hw-tag:hover { border-color: var(--hw-muted); color: var(--hw-text); }
     .hw-tag.hw-tag-active {
-      background: var(--hw-accent);
-      border-color: var(--hw-accent);
-      color: #1a1410;
-      font-weight: 600;
+      background: ${isDark ? '#1f6feb' : '#0969da'};
+      border-color: ${isDark ? '#1f6feb' : '#0969da'};
+      color: #fff;
     }
 
     /* ── lista de artigos ── */
-    .hw-list { display: flex; flex-direction: column; gap: 12px; }
+    .hw-list { display: flex; flex-direction: column; }
 
     .hw-article {
-      border: 1px solid var(--hw-border);
-      border-radius: var(--hw-radius);
-      overflow: hidden;
-      transition: box-shadow .15s;
+      border-bottom: 1px solid var(--hw-border);
+      padding: 16px 0;
     }
-    .hw-article:hover { box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+    .hw-article:first-child { border-top: 1px solid var(--hw-border); }
 
     .hw-article-head {
-      padding: 14px 18px;
-      background: var(--hw-surface);
       cursor: pointer;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
       user-select: none;
     }
-    .hw-article-head:hover { background: var(--hw-border); }
 
     .hw-article-main { flex: 1; min-width: 0; }
 
     .hw-article-title {
-      margin: 0 0 6px;
-      font-size: 15px;
-      font-weight: normal;
-      font-style: italic;
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 600;
+      font-style: normal;
     }
     .hw-article-title a {
       color: var(--hw-text);
       text-decoration: none;
-      pointer-events: none; /* clique vai pro card todo */
+      pointer-events: none;
     }
-    .hw-article-head:hover .hw-article-title a { text-decoration: underline; }
+    .hw-article-head:hover .hw-article-title a { color: ${isDark ? '#58a6ff' : '#0969da'}; }
 
     .hw-article-meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-size: 12px;
       color: var(--hw-muted);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      margin-bottom: 6px;
     }
-    .hw-article-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .hw-article-tags { display: flex; gap: 4px; flex-wrap: wrap; }
     .hw-article-tag {
-      background: var(--hw-accent);
-      color: #1a1410;
-      border-radius: 4px;
-      padding: 1px 7px;
+      background: var(--hw-surface);
+      color: var(--hw-muted);
+      border: 1px solid var(--hw-border);
+      border-radius: 999px;
+      padding: 0 8px;
       font-size: 11px;
-      font-weight: 700;
-      text-transform: lowercase;
-      letter-spacing: .02em;
+      font-weight: normal;
     }
 
-    /* contador de highlights + chevron */
+    /* toggle button */
+    .hw-toggle-btn {
+      margin-top: 2px;
+      font-size: 12px;
+      background: var(--hw-surface);
+      border: 1px solid var(--hw-border);
+      padding: 2px 10px;
+      border-radius: var(--hw-radius);
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--hw-muted);
+      transition: all .12s;
+      display: inline-block;
+    }
+    .hw-toggle-btn:hover { border-color: var(--hw-muted); color: var(--hw-text); }
+    .hw-article.hw-open .hw-toggle-btn {
+      background: var(--hw-surface);
+      color: var(--hw-text);
+    }
+
     .hw-article-aside {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 6px;
       flex-shrink: 0;
       padding-top: 2px;
     }
     .hw-article-count {
       font-size: 11px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--hw-muted);
       white-space: nowrap;
     }
-    .hw-chevron {
-      font-size: 10px;
-      color: var(--hw-muted);
-      transition: transform .2s;
-      line-height: 1;
-    }
-    .hw-article.hw-open .hw-chevron { transform: rotate(180deg); }
 
     /* ── corpo colapsável ── */
-    .hw-article-body {
-      display: none;
-      border-top: 1px solid var(--hw-border);
-    }
+    .hw-article-body { display: none; margin-top: 12px; }
     .hw-article.hw-open .hw-article-body { display: block; }
 
     /* ── highlights ── */
-    .hw-highlights { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+    .hw-highlights { display: flex; flex-direction: column; gap: 8px; }
 
     .hw-hl {
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-      background: var(--hw-surface);
-      border-left: 4px solid var(--hw-accent);
+      padding: 8px 12px;
+      border-radius: 0 var(--hw-radius) var(--hw-radius) 0;
+      background: transparent;
+      border-left: 3px solid var(--hw-border);
     }
+    .hw-hl:hover { border-left-color: var(--hw-accent); }
     .hw-hl-text {
       margin: 0;
-      font-size: 14px;
-      font-style: italic;
-      line-height: 1.65;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 1.6;
       color: var(--hw-text);
     }
     .hw-hl-note {
-      margin: 8px 0 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--hw-border);
+      margin: 6px 0 0;
       font-size: 12px;
-      font-style: normal;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-style: italic;
       color: var(--hw-muted);
     }
 
     /* ── page comment ── */
     .hw-page-comment {
-      margin: 0;
-      padding: 10px 18px;
-      border-top: 1px solid var(--hw-border);
+      margin: 0 0 10px;
       font-size: 13px;
       font-style: italic;
       color: var(--hw-muted);
+      border-left: 3px solid var(--hw-border);
+      padding-left: 12px;
     }
 
     /* ── estados ── */
     .hw-state {
-      text-align: center;
-      padding: 48px 24px;
+      padding: 32px 0;
       color: var(--hw-muted);
       font-size: 14px;
     }
@@ -304,14 +301,12 @@
     /* ── rodapé ── */
     .hw-footer {
       margin-top: 20px;
-      text-align: right;
       font-size: 11px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       color: var(--hw-muted);
       opacity: .5;
     }
     .hw-footer a { color: inherit; text-decoration: none; }
-    .hw-footer a:hover { opacity: 1; text-decoration: underline; }
+    .hw-footer a:hover { text-decoration: underline; }
   `;
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -416,15 +411,12 @@
                 ${a.date ? `<span>${esc(a.date)}</span>` : ''}
                 ${tagsHTML ? `<div class="hw-article-tags">${tagsHTML}</div>` : ''}
               </div>
-            </div>
-            <div class="hw-article-aside">
-              <span class="hw-article-count">${count} destaque${count !== 1 ? 's' : ''}</span>
-              <span class="hw-chevron">▼</span>
+              <button class="hw-toggle-btn">${count} destaque${count !== 1 ? 's' : ''} ↓</button>
             </div>
           </div>
           <div class="hw-article-body">
-            <div class="hw-highlights">${highlightsHTML}</div>
             ${a.page_comment ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>` : ''}
+            <div class="hw-highlights">${highlightsHTML}</div>
           </div>
         </article>`;
     }
@@ -444,7 +436,13 @@
           // Permite clicar no link sem abrir/fechar o card
           if (e.target.tagName === 'A') return;
           const article = head.closest('.hw-article');
-          article.classList.toggle('hw-open');
+          const isOpen = article.classList.toggle('hw-open');
+          const btn = head.querySelector('.hw-toggle-btn');
+          if (btn) {
+            const count = (btn.textContent.match(/^\d+/) || [''])[0];
+            const label = btn.textContent.replace(/[↓↑]$/, '').trim();
+            btn.textContent = label + (isOpen ? ' ↑' : ' ↓');
+          }
         });
       });
     }
