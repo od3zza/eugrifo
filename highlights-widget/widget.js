@@ -170,18 +170,29 @@
     }
 
     /* ── lista de artigos ── */
-    .hw-list { display: flex; flex-direction: column; gap: 18px; }
+    .hw-list { display: flex; flex-direction: column; gap: 12px; }
 
     .hw-article {
       border: 1px solid var(--hw-border);
       border-radius: var(--hw-radius);
       overflow: hidden;
+      transition: box-shadow .15s;
     }
+    .hw-article:hover { box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+
     .hw-article-head {
       padding: 14px 18px;
       background: var(--hw-surface);
-      border-bottom: 1px solid var(--hw-border);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      user-select: none;
     }
+    .hw-article-head:hover { background: var(--hw-border); }
+
+    .hw-article-main { flex: 1; min-width: 0; }
+
     .hw-article-title {
       margin: 0 0 6px;
       font-size: 15px;
@@ -191,8 +202,10 @@
     .hw-article-title a {
       color: var(--hw-text);
       text-decoration: none;
+      pointer-events: none; /* clique vai pro card todo */
     }
-    .hw-article-title a:hover { text-decoration: underline; }
+    .hw-article-head:hover .hw-article-title a { text-decoration: underline; }
+
     .hw-article-meta {
       display: flex;
       flex-wrap: wrap;
@@ -213,6 +226,36 @@
       text-transform: lowercase;
       letter-spacing: .02em;
     }
+
+    /* contador de highlights + chevron */
+    .hw-article-aside {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .hw-article-count {
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--hw-muted);
+      white-space: nowrap;
+    }
+    .hw-chevron {
+      font-size: 10px;
+      color: var(--hw-muted);
+      transition: transform .2s;
+      line-height: 1;
+    }
+    .hw-article.hw-open .hw-chevron { transform: rotate(180deg); }
+
+    /* ── corpo colapsável ── */
+    .hw-article-body {
+      display: none;
+      border-top: 1px solid var(--hw-border);
+    }
+    .hw-article.hw-open .hw-article-body { display: block; }
 
     /* ── highlights ── */
     .hw-highlights { padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; }
@@ -344,7 +387,7 @@
       });
     }
 
-    function articleHTML(a) {
+    function articleHTML(a, idx) {
       const highlightsHTML = (a.highlights || []).map(h => {
         const borderColor = COLOR_MAP[h.color] || cfg.accent;
         return `
@@ -358,30 +401,52 @@
         `<span class="hw-article-tag">${esc(tag)}</span>`
       ).join('');
 
+      const count = (a.highlights || []).length;
+
       return `
-        <article class="hw-article">
+        <article class="hw-article" data-idx="${idx}">
           <div class="hw-article-head">
-            <h3 class="hw-article-title">
-              <a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
-                ${esc(a.title || a.url)}
-              </a>
-            </h3>
-            <div class="hw-article-meta">
-              ${a.date ? `<span>${esc(a.date)}</span>` : ''}
-              ${tagsHTML ? `<div class="hw-article-tags">${tagsHTML}</div>` : ''}
+            <div class="hw-article-main">
+              <h3 class="hw-article-title">
+                <a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
+                  ${esc(a.title || a.url)}
+                </a>
+              </h3>
+              <div class="hw-article-meta">
+                ${a.date ? `<span>${esc(a.date)}</span>` : ''}
+                ${tagsHTML ? `<div class="hw-article-tags">${tagsHTML}</div>` : ''}
+              </div>
+            </div>
+            <div class="hw-article-aside">
+              <span class="hw-article-count">${count} destaque${count !== 1 ? 's' : ''}</span>
+              <span class="hw-chevron">▼</span>
             </div>
           </div>
-          <div class="hw-highlights">${highlightsHTML}</div>
-          ${a.page_comment ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>` : ''}
+          <div class="hw-article-body">
+            <div class="hw-highlights">${highlightsHTML}</div>
+            ${a.page_comment ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>` : ''}
+          </div>
         </article>`;
     }
 
     function refreshList() {
       const list = root.querySelector('.hw-list');
       const items = filtered();
-      list.innerHTML = items.length
-        ? items.map(articleHTML).join('')
-        : `<div class="hw-state">🔍 ${t.noMatch}</div>`;
+      if (!items.length) {
+        list.innerHTML = `<div class="hw-state">🔍 ${t.noMatch}</div>`;
+        return;
+      }
+      list.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
+
+      // Bind toggle em cada cabeçalho
+      list.querySelectorAll('.hw-article-head').forEach(head => {
+        head.addEventListener('click', e => {
+          // Permite clicar no link sem abrir/fechar o card
+          if (e.target.tagName === 'A') return;
+          const article = head.closest('.hw-article');
+          article.classList.toggle('hw-open');
+        });
+      });
     }
 
     function refreshTagButtons() {
