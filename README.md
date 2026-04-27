@@ -12,9 +12,9 @@ backend.**
 O **eugrifo** é uma extensão que permite salvar trechos destacados no
 GitHub e exibi-los como um widget em qualquer site.
 
--   💾 Armazena no GitHub\
--   ⚡ Zero backend\
--   🌐 Funciona em qualquer página\
+-   💾 Armazena no GitHub
+-   ⚡ Zero backend
+-   🌐 Funciona em qualquer página
 -   🎨 Personalizável
 
 ## ✦ Pré-requisitos
