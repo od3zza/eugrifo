@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eugrifo — Guia de Instalação</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #eddfd8;
+      --paper:   #161616;
+      --muted:   #888;
+      --border:  #2a2a2a;
+      --accent:  #e73e18;
+      --surface: #1f1f1f;
+      --code-bg: #0e0e0e;
+      --code-fg: #eddfd8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--ink);
+      background: var(--paper);
+      padding: 0 24px 80px;
+    }
+
+    /* ── header ── */
+    header {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 56px;
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 3px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 42px;
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -.01em;
+      margin-bottom: 16px;
+    }
+    h1 em { font-style: italic; color: var(--muted); }
+    .lead {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 540px;
+    }
+
+    /* ── layout ── */
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── section ── */
+    section {
+      margin-bottom: 56px;
+    }
+
+    /* ── step header ── */
+    .step-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── callout ── */
+    .callout {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 6px 6px 0;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+    .callout strong { font-weight: 600; }
+    .callout.warn { border-left-color: #e73e18; }
+    .callout.tip  { border-left-color: #eddfd8; }
+
+    /* ── code ── */
+    pre {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 20px 22px;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--code-fg);
+    }
+    p code, li code {
+      background: var(--surface);
+      color: var(--ink);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+
+    /* ── inline comment in code ── */
+    .cm { color: #555; }
+    .hl { color: #e73e18; }
+    .at { color: #eddfd8; }
+    .st { color: #c8a898; }
+
+    /* ── file list ── */
+    .file-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .file-icon { font-size: 16px; }
+
+    /* ── step list ── */
+    ol.steps { list-style: none; counter-reset: step; }
+    ol.steps li {
+      counter-increment: step;
+      padding: 0 0 18px 0;
+      position: relative;
+    }
+    ol.steps li::before {
+      content: counter(step) ".";
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    /* ── divider ── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── checklist ── */
+    .checklist { list-style: none; }
+    .checklist li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 16px;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .check { color: var(--accent); font-weight: 700; }
+
+    /* ── note block ── */
+    .note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 22px;
+      margin: 20px 0;
+      font-size: 16px;
+    }
+    .note-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* ── footer ── */
+    footer {
+      max-width: 680px;
+      margin: 0 auto;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer a { color: var(--muted); text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">✦ guia de instalação</div>
+  <h1>eugrifo<br><em>do zero ao widget</em></h1>
+  <p class="lead">Configure sua extensão de destaques pessoal e exiba-os em qualquer site — sem servidor, sem backend.</p>
+</header>
+
+<div class="content">
+
+  <!-- ── o que você vai precisar ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">0</div>
+      <h2>Antes de começar</h2>
+    </div>
+
+    <p>O processo completo tem seis etapas e leva cerca de 10 minutos. Você vai precisar de:</p>
+
+    <ul class="checklist">
+      <li><span class="check">✦</span> Uma conta no <strong>GitHub</strong> (gratuita)</li>
+      <li><span class="check">✦</span> Um repositório no GitHub — pode ser privado ou público</li>
+      <li><span class="check">✦</span> O Chrome ou outro navegador baseado em Chromium</li>
+      <li><span class="check">✦</span> Um site onde colar o widget (HTML puro, WordPress, Vercel — qualquer coisa) — <em>opcional</em></li>
+    </ul>
+
+    <div class="callout tip" style="margin-top:20px">
+      O arquivo JSON que guarda seus highlights <strong>é criado automaticamente</strong> no primeiro highlight que você salvar. Não é necessário criar nada manualmente.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 1: repositório ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">1</div>
+      <h2>Crie um repositório no GitHub</h2>
+    </div>
+
+    <p>Esse repositório vai funcionar como seu banco de dados pessoal de destaques. Pode ser privado — só você vai escrever nele via token. O widget pode lê-lo sem token se for público.</p>
+
+    <ol class="steps">
+      <li>Acesse <strong>github.com</strong> e clique em <strong>New repository</strong></li>
+      <li>Dê um nome — ex: <code>meus-highlights</code></li>
+      <li>Escolha <strong>Private</strong> ou <strong>Public</strong> (sua preferência)</li>
+      <li>Marque <strong>"Add a README file"</strong> para que o repositório não fique vazio</li>
+      <li>Clique em <strong>Create repository</strong></li>
+    </ol>
+
+    <div class="note">
+      <div class="note-title">📌 anote o nome do usuário e do repositório</div>
+      Você vai precisar deles na configuração da extensão. Exemplo: usuário <code>od3zza</code>, repositório <code>meus-highlights</code>.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 2: token ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">2</div>
+      <h2>Gere um token do GitHub</h2>
+    </div>
+
+    <p>O token é o que permite à extensão salvar e ler seus highlights no GitHub. Ele fica guardado localmente no seu navegador e nunca é compartilhado.</p>
+
+    <ol class="steps">
+      <li>Vá em <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong></li>
+      <li>Clique em <strong>Generate new token (classic)</strong></li>
+      <li>Dê um nome como <code>eugrifo-extension</code></li>
+      <li>Em <strong>Expiration</strong>, escolha <em>No expiration</em> para não precisar renovar</li>
+      <li>Em <strong>Select scopes</strong>, marque apenas <code>repo</code></li>
+      <li>Clique em <strong>Generate token</strong> e <strong>copie o token agora</strong> — ele só aparece uma vez</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>⚠️ Não feche a página antes de copiar.</strong> Se você perder o token, é só gerar outro — mas não tem como recuperar o que foi gerado.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 3: extensão ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <h2>Instale a extensão</h2>
+    </div>
+
+    <p>A extensão não está na Chrome Web Store — você a instala como um arquivo local. Por isso o Chrome precisa estar em <em>modo desenvolvedor</em>.</p>
+
+    <p>Primeiro, baixe e organize os arquivos numa pasta — ex: <code>eugrifo/</code>:</p>
+
+    <div class="file-list">
+      <div class="file-item"><span class="file-icon">📄</span>manifest.json</div>
+      <div class="file-item"><span class="file-icon">📄</span>background.js</div>
+      <div class="file-item"><span class="file-icon">📄</span>content.js</div>
+      <div class="file-item"><span class="file-icon">📄</span>popup.html</div>
+      <div class="file-item"><span class="file-icon">📄</span>popup.js</div>
+      <div class="file-item"><span class="file-icon">📄</span>options.html</div>
+      <div class="file-item"><span class="file-icon">📄</span>options.js</div>
+      <div class="file-item"><span class="file-icon">📁</span>icons/ (opcional)</div>
+    </div>
+
+    <ol class="steps">
+      <li>Abra o Chrome e acesse <code>chrome://extensions</code></li>
+      <li>Ative o <strong>Modo do desenvolvedor</strong> (toggle no canto superior direito)</li>
+      <li>Clique em <strong>Carregar sem compactação</strong></li>
+      <li>Selecione a pasta <code>eugrifo/</code></li>
+      <li>A extensão vai aparecer na lista — clique no ícone de puzzle 🧩 na barra do Chrome para fixá-la</li>
+    </ol>
+
+    <div class="callout">
+      Se você modificar algum arquivo depois de instalar, clique no ↺ ao lado da extensão em <code>chrome://extensions</code> para recarregar as mudanças.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 4: configurações ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">4</div>
+      <h2>Configure a extensão</h2>
+    </div>
+
+    <p>Agora você conecta a extensão ao seu repositório GitHub.</p>
+
+    <ol class="steps">
+      <li>Clique no ícone da extensão na barra do Chrome</li>
+      <li>Clique em <strong>⚙️ Configurações</strong></li>
+      <li>Na aba <strong>🔗 GitHub</strong>, preencha:
+        <pre><code><span class="at">Token</span>       <span class="st">ghp_xxxxxxxxxxxxxxxx</span>      <span class="cm">← o que você copiou no passo 2</span>
+<span class="at">Usuário</span>     <span class="st">od3zza</span>                   <span class="cm">← seu usuário do GitHub</span>
+<span class="at">Repositório</span> <span class="st">meus-highlights</span>          <span class="cm">← o repo criado no passo 1</span>
+<span class="at">Arquivo</span>     <span class="st">eugrifo-highlights.json</span>  <span class="cm">← pode deixar o padrão</span></code></pre>
+      </li>
+      <li>Clique em <strong>💾 Salvar configurações</strong></li>
+      <li>Clique em <strong>🧪 Testar conexão</strong> — deve aparecer <em>"Conectado!"</em></li>
+    </ol>
+
+    <p>Na aba <strong>🎨 Aparência</strong> você pode personalizar o nome da extensão e as quatro cores disponíveis para destacar textos.</p>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 5: primeiro highlight ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">5</div>
+      <h2>Salve seu primeiro highlight</h2>
+    </div>
+
+    <p>Com tudo configurado, é só usar:</p>
+
+    <ol class="steps">
+      <li>Vá em qualquer página da web</li>
+      <li>Selecione um trecho de texto com o mouse</li>
+      <li>Clique no ícone da extensão na barra do Chrome</li>
+      <li>Escolha uma cor, adicione uma nota ou tags se quiser</li>
+      <li>Clique em <strong>💾 Salvar highlight</strong> — o destaque é enviado ao GitHub primeiro e só então aparece visualmente na página</li>
+    </ol>
+
+    <p>O arquivo <code>eugrifo-highlights.json</code> no seu repositório será criado automaticamente nesse primeiro save.</p>
+
+    <div class="callout tip">
+      Use <strong>🔄 Restaurar highlights</strong> no popup se os destaques não aparecerem ao recarregar a página. Isso puxa todos os highlights do GitHub e os reaplica na página atual.
+    </div>
+
+    <div class="callout">
+      <strong>Editar ou excluir um highlight:</strong> clique diretamente sobre o texto destacado na página para abrir o painel de edição. Você pode mudar a cor, editar a nota ou excluir — tudo sincroniza com o GitHub automaticamente.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── passo 6: widget ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num">6</div>
+      <h2>Adicione o widget ao seu site</h2>
+    </div>
+
+    <p>O widget lê seu <code>eugrifo-highlights.json</code> do GitHub e exibe tudo automaticamente — com busca e filtro por tags. Você não precisa subir nenhum arquivo extra.</p>
+
+    <p>Na aba <strong>📎 Widget</strong> das configurações, o snippet já estará gerado com seus dados. A estrutura é essa:</p>
+
+    <pre><code><span class="hl">&lt;div</span> <span class="at">id</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;&lt;/div&gt;</span>
+<span class="hl">&lt;script</span>
+  <span class="at">src</span>=<span class="st">"https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"</span>
+  <span class="at">data-owner</span>=<span class="st">"seu-usuario"</span>
+  <span class="at">data-repo</span>=<span class="st">"seu-repositorio"</span>
+  <span class="at">data-file</span>=<span class="st">"eugrifo-highlights.json"</span>
+  <span class="at">data-lang</span>=<span class="st">"pt"</span>
+  <span class="at">data-target</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;
+&lt;/script&gt;</span></code></pre>
+
+    <p>Para repositórios privados, gere um segundo token no GitHub com permissão de leitura apenas (<strong>Fine-grained token → Contents: Read-only</strong>) e adicione o atributo:</p>
+
+    <pre><code>  <span class="at">data-token</span>=<span class="st">"github_pat_xxxxx"</span></code></pre>
+
+    <div class="note">
+      <div class="note-title">🎨 aparência do widget</div>
+      O visual é definido inteiramente pelo <code>widget.js</code> hospedado no repositório do eugrifo. Isso significa que <strong>qualquer atualização de estilo feita lá reflete automaticamente em todos os widgets instalados</strong> via jsDelivr CDN — sem que você precise alterar o código no seu site.
+    </div>
+
+    <div class="note">
+      <div class="note-title">🚀 sobre o cdn.jsdelivr.net</div>
+      O <code>widget.js</code> está em <code>od3zza/eugrifo</code> na pasta <code>highlights-widget/</code>. O jsDelivr o serve automaticamente — sem custo, sem configuração. O CDN faz cache por até 24h; em atualizações urgentes, é possível forçar a versão mais recente trocando <code>@main</code> por um SHA de commit específico.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ── resolução de problemas ── -->
+  <section>
+    <div class="step-label">
+      <div class="step-num" style="background:var(--accent)">?</div>
+      <h2>Resolução de problemas</h2>
+    </div>
+
+    <p><strong>O highlight não fica destacado na página após recarregar</strong><br>
+    Clique em 🔄 Restaurar highlights no popup. Se ainda não funcionar, abra o DevTools (<code>F12</code>), vá em Console e veja se há erros.</p>
+
+    <p><strong>O destaque some logo após salvar</strong><br>
+    A partir da v4.0, o highlight só aparece na página após confirmação do GitHub. Se o texto sumiu sem mensagem de erro, verifique a conexão e as configurações de token.</p>
+
+    <p><strong>O arquivo JSON está como <code>[]</code> (array vazio)</strong><br>
+    Edite o arquivo no GitHub e troque o conteúdo para <code>{}</code> (chaves, não colchetes). O sistema espera um objeto.</p>
+
+    <p><strong>O widget não carrega no site</strong><br>
+    Verifique se os atributos <code>data-owner</code> e <code>data-repo</code> estão preenchidos corretamente na tag <code>&lt;script&gt;</code>, se o repositório existe e se o caminho do arquivo bate com o que está nas configurações da extensão.</p>
+
+    <p><strong>As cores dos highlights aparecem todas iguais no widget</strong><br>
+    Certifique-se de estar usando o <code>widget.js</code> v4.0 ou superior. Versões antigas não reconheciam cores no formato hex — apenas nomes como <code>yellow</code> ou <code>blue</code>. A migração automática normaliza os dados na próxima vez que você salvar ou restaurar um highlight.</p>
+
+    <p><strong>Erro "token inválido" nas configurações</strong><br>
+    O token precisa começar com <code>ghp_</code> ou <code>github_pat_</code>. Se tiver outro formato, gere um novo na página de tokens do GitHub.</p>
+
+    <p><strong>Erro 404 ao testar conexão</strong><br>
+    O nome do repositório ou do usuário está errado nas configurações. Verifique se batem exatamente com a URL do repositório no GitHub.</p>
+  </section>
+
+</div>
+
+<footer>
+  <span>✦ eugrifo</span>
+  <a href="https://oieuoshi.vercel.app/blog/misc/porque-eu-fiz-uma-extensao-pra-salvar-textos-destacados" target="_blank">baseado no projeto da uoshi</a>
+</footer>
+
+</body>
+</html>
