@@ -1,24 +1,20 @@
 /*!
- * eugrifo — Highlights Widget  v4.0
- * Exibe seu feed de destaques em qualquer site.
+ * Highlights Widget
+ * Exibe seu feed de destaques em qualquer site
  *
  * Como usar:
- *   <div id="meus-grifos"></div>
- *   <script
- *     src="https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"
- *     data-owner="seu-usuario"
+ *   <div id="meus-highlights"></div>
+ *   <script src="widget.js"
+ *     data-owner="seu-usuario-github"
  *     data-repo="seu-repositorio"
- *     data-file="eugrifo-highlights.json"
- *     data-token="ghp_token_readonly"   ← opcional, repositórios privados
- *     data-lang="pt"                    ← pt | en
- *     data-target="meus-grifos">
+ *     data-file="lib/highlights.json"
+ *     data-token="ghp_seu_token_readonly"
+ *     data-accent="#ffd700"
+ *     data-theme="light"
+ *     data-lang="pt"
+ *     data-target="meus-highlights">
  *   </script>
- *
- * NOTA: O visual é definido inteiramente pelo widget.js hospedado no GitHub.
- * Atualizar o arquivo lá reflete em todos os widgets instalados automaticamente
- * (via jsDelivr CDN, que faz cache por ~24h; force com @sha ou versão pinada).
  */
- 
 (function () {
   'use strict';
 
