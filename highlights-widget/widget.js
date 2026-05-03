@@ -104,7 +104,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #1a1a1a;
       line-height: 1.6;
-      max-width: 720px;
+      max-width: 800px;
     }
     .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
