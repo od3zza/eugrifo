@@ -1,369 +1,363 @@
 /*!
- * Highlights Widget
- * Exibe seu feed de destaques em qualquer site
+ * eugrifo — Highlights Widget  v4.0
+ * Exibe seu feed de destaques em qualquer site.
  *
  * Como usar:
- *   <div id="meus-highlights"></div>
- *   <script src="widget.js"
- *     data-owner="seu-usuario-github"
+ *   <div id="meus-grifos"></div>
+ *   <script
+ *     src="https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"
+ *     data-owner="seu-usuario"
  *     data-repo="seu-repositorio"
- *     data-file="lib/highlights.json"
- *     data-token="ghp_seu_token_readonly"
- *     data-accent="#ffd700"
- *     data-theme="light"
- *     data-lang="pt"
- *     data-target="meus-highlights">
+ *     data-file="eugrifo-highlights.json"
+ *     data-token="ghp_token_readonly"   ← opcional, repositórios privados
+ *     data-lang="pt"                    ← pt | en
+ *     data-target="meus-grifos">
  *   </script>
+ *
+ * NOTA: O visual é definido inteiramente pelo widget.js hospedado no GitHub.
+ * Atualizar o arquivo lá reflete em todos os widgets instalados automaticamente
+ * (via jsDelivr CDN, que faz cache por ~24h; force com @sha ou versão pinada).
  */
 (function () {
   'use strict';
+
+  // ─── Configuração ────────────────────────────────────────────────────────────
 
   const script =
     document.currentScript ||
     document.querySelector('script[data-owner]');
 
-  const isDark = (script?.getAttribute('data-theme') || 'light') === 'dark';
-
   const cfg = {
-    owner:   script?.getAttribute('data-owner')   || '',
-    repo:    script?.getAttribute('data-repo')    || '',
-    file:    script?.getAttribute('data-file')    || 'lib/highlights.json',
-    token:   script?.getAttribute('data-token')   || '',
-    target:  script?.getAttribute('data-target')  || 'highlights-widget',
-    accent:  script?.getAttribute('data-accent')  || '#ffd700',
-    theme:   script?.getAttribute('data-theme')   || 'light',
-    lang:    script?.getAttribute('data-lang')    || 'pt',
-    font:    script?.getAttribute('data-font')    || "'Georgia', 'Times New Roman', serif",
-    radius:  script?.getAttribute('data-radius')  || '10px',
-    bg:      script?.getAttribute('data-bg')      || (isDark ? '#141414' : '#ffffff'),
-    surface: script?.getAttribute('data-surface') || (isDark ? '#1e1e1e' : '#f8f8f6'),
-    border:  script?.getAttribute('data-border')  || (isDark ? '#2a2a2a' : '#e8e4df'),
-    text:    script?.getAttribute('data-text')    || (isDark ? '#e2ddd8' : '#2a2520'),
-    muted:   script?.getAttribute('data-muted')   || (isDark ? '#6b6560' : '#8a8480'),
+    owner:  script?.getAttribute('data-owner')  || '',
+    repo:   script?.getAttribute('data-repo')   || '',
+    file:   script?.getAttribute('data-file')   || 'eugrifo-highlights.json',
+    token:  script?.getAttribute('data-token')  || '',
+    target: script?.getAttribute('data-target') || 'eugrifo-widget',
+    lang:   script?.getAttribute('data-lang')   || 'pt',
   };
 
   // ─── i18n ────────────────────────────────────────────────────────────────────
 
   const copy = {
     pt: {
-      loading:    'Carregando destaques…',
-      empty:      'Nenhum destaque encontrado.',
-      noMatch:    'Nenhum resultado para esta busca.',
-      search:     'Buscar nos destaques…',
-      tags:       'filtrar por tag',
-      tagsActive: 'tags ativas',
-      read:       'ler artigo ↗',
-      showHl:     'ver destaques',
-      hideHl:     'ocultar destaques',
-      credit:     'feito com eugrifo',
-      error:      'Não foi possível carregar os destaques.',
+      loading:     'Carregando destaques…',
+      empty:       'Nenhum destaque encontrado.',
+      noMatch:     'Nenhum resultado para esta busca.',
+      search:      'Buscar nos destaques…',
+      showTags:    'filtrar por tag',
+      hideTags:    'ocultar tags',
+      clearTags:   'limpar filtros',
+      highlights:  (n) => `${n} destaque${n !== 1 ? 's' : ''}`,
+      showMore:    'ver destaques ↓',
+      hideMore:    'ocultar ↑',
+      note:        'nota',
+      error:       'Não foi possível carregar os destaques.',
+      credit:      'feito com eugrifo',
     },
     en: {
-      loading:    'Loading highlights…',
-      empty:      'No highlights yet.',
-      noMatch:    'No results for this search.',
-      search:     'Search highlights…',
-      tags:       'filter by tag',
-      tagsActive: 'active tags',
-      read:       'read article ↗',
-      showHl:     'show highlights',
-      hideHl:     'hide highlights',
-      credit:     'made with eugrifo',
-      error:      'Could not load highlights.',
+      loading:     'Loading highlights…',
+      empty:       'No highlights yet.',
+      noMatch:     'No results for this search.',
+      search:      'Search highlights…',
+      showTags:    'filter by tag',
+      hideTags:    'hide tags',
+      clearTags:   'clear filters',
+      highlights:  (n) => `${n} highlight${n !== 1 ? 's' : ''}`,
+      showMore:    'show highlights ↓',
+      hideMore:    'hide ↑',
+      note:        'note',
+      error:       'Could not load highlights.',
+      credit:      'made with eugrifo',
     },
   };
   const t = copy[cfg.lang] || copy.pt;
 
-  // ─── Paleta de cores ─────────────────────────────────────────────────────────
+  // ─── Resolução de cor ────────────────────────────────────────────────────────
+  // Aceita tanto nomes legados ("yellow", "blue"…) quanto hex direto ("#ffd700")
 
-  const COLOR_MAP = {
+  const COLOR_NAMES = {
     yellow: '#ffd700',
     green:  '#90ee90',
     blue:   '#add8e6',
     pink:   '#ffb6c1',
+    red:    '#f56565',
   };
+
+  // Mapeia cor para uma versão com 15% de opacidade para o fundo do card
+  function resolveColor(color) {
+    if (!color) return '#ffd700';
+    if (color.startsWith('#')) return color;
+    return COLOR_NAMES[color.toLowerCase()] || '#ffd700';
+  }
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
 
   // ─── CSS ─────────────────────────────────────────────────────────────────────
 
   const CSS = `
     .hw {
-      --hw-accent:   ${cfg.accent};
-      --hw-bg:       ${cfg.bg};
-      --hw-surface:  ${cfg.surface};
-      --hw-border:   ${cfg.border};
-      --hw-text:     ${cfg.text};
-      --hw-muted:    ${cfg.muted};
-      --hw-radius:   ${cfg.radius};
-
-      font-family: ${cfg.font};
-      color: var(--hw-text);
-      background: var(--hw-bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #1a1a1a;
       line-height: 1.6;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
+      max-width: 720px;
     }
     .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
     /* ── controles ── */
     .hw-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 28px;
+      margin-bottom: 2rem;
     }
+
     .hw-search {
       width: 100%;
-      padding: 11px 16px;
-      background: var(--hw-surface);
-      border: 1px solid var(--hw-border);
-      border-radius: var(--hw-radius);
-      font-size: 14px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
       font-family: inherit;
-      color: var(--hw-text);
+      color: inherit;
+      background: #fff;
       outline: none;
       transition: border-color .2s;
+      margin-bottom: 0.75rem;
     }
-    .hw-search::placeholder { color: var(--hw-muted); }
-    .hw-search:focus { border-color: var(--hw-accent); }
+    .hw-search::placeholder { color: #aaa; }
+    .hw-search:focus { border-color: #999; }
 
-    .hw-tags-row {
+    .hw-tags-bar {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
+
     .hw-tags-toggle {
-      flex-shrink: 0;
-      padding: 5px 13px;
-      border-radius: 999px;
-      border: 1px solid var(--hw-border);
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      border: 1px solid #ccc;
       background: transparent;
-      color: var(--hw-muted);
-      font-size: 12px;
+      color: #666;
+      font-size: 0.8rem;
       font-family: inherit;
       cursor: pointer;
       transition: all .15s;
       white-space: nowrap;
     }
-    .hw-tags-toggle:hover { border-color: var(--hw-accent); color: var(--hw-text); }
+    .hw-tags-toggle:hover { border-color: #999; color: #333; }
     .hw-tags-toggle.has-active {
-      background: var(--hw-accent);
-      border-color: var(--hw-accent);
-      color: #1a1410;
-      font-weight: 600;
+      background: #000;
+      border-color: #000;
+      color: #fff;
     }
 
-    .hw-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+    .hw-tags-wrap {
+      width: 100%;
+      margin-top: 0.5rem;
+      display: none;
     }
-    .hw-tags.hw-tags-hidden { display: none; }
+    .hw-tags-wrap.visible { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
     .hw-tag {
-      padding: 5px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--hw-border);
-      background: transparent;
-      color: var(--hw-muted);
-      font-size: 12px;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      background: #f5f5f5;
+      color: #333;
+      font-size: 0.8rem;
       font-family: inherit;
       cursor: pointer;
       transition: all .15s;
     }
-    .hw-tag:hover { border-color: var(--hw-accent); color: var(--hw-text); }
-    .hw-tag.hw-tag-active {
-      background: var(--hw-accent);
-      border-color: var(--hw-accent);
-      color: #1a1410;
-      font-weight: 600;
+    .hw-tag:hover { border-color: #bbb; background: #e8e8e8; }
+    .hw-tag.active {
+      background: #000;
+      border-color: #000;
+      color: #fff;
     }
 
-    /* ── lista de artigos ── */
-    .hw-list { display: flex; flex-direction: column; gap: 12px; }
+    /* ── lista ── */
+    .hw-list { display: flex; flex-direction: column; gap: 0; }
 
-    .hw-article {
-      border: 1px solid var(--hw-border);
-      border-radius: var(--hw-radius);
+    /* ── card de artigo ── */
+    .hw-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 1.2rem;
       overflow: hidden;
-      transition: box-shadow .15s;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,.04);
+      transition: box-shadow .2s;
     }
-    .hw-article:hover { box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+    .hw-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
 
-    /* ── cabeçalho do artigo ── */
-    .hw-article-head {
-      padding: 14px 18px 10px;
-      background: var(--hw-surface);
-    }
-
-    .hw-article-top {
+    .hw-card-head {
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 8px;
+      gap: 0.9rem;
+      padding: 1rem 1.1rem;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
     }
 
-    .hw-article-main { flex: 1; min-width: 0; }
-
-    .hw-article-title {
-      margin: 0 0 6px;
-      font-size: 15px;
-      font-weight: normal;
-      font-style: italic;
+    .hw-favicon {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      object-fit: contain;
     }
-    .hw-article-title a {
-      color: var(--hw-text);
+
+    .hw-card-info { flex: 1; min-width: 0; }
+
+    .hw-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111;
       text-decoration: none;
-      pointer-events: all;
+      display: block;
+      margin-bottom: 0.25rem;
+      pointer-events: none;
     }
-    .hw-article-title a:hover { text-decoration: underline; }
+    .hw-card-head:hover .hw-card-title { text-decoration: underline; }
 
-    .hw-article-meta {
+    .hw-card-domain {
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .hw-card-tags {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--hw-muted);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      gap: 0.3rem;
+      margin-top: 0.4rem;
     }
-    .hw-article-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-    .hw-article-tag {
-      background: var(--hw-accent);
-      color: #1a1410;
-      border-radius: 4px;
-      padding: 1px 7px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: lowercase;
-      letter-spacing: .02em;
-    }
-
-    /* contador de highlights */
-    .hw-article-count {
-      font-size: 11px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--hw-muted);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* ── botão toggle — ABAIXO do cabeçalho ── */
-    .hw-article-footer {
-      padding: 0 18px 12px;
-      background: var(--hw-surface);
-    }
-    .hw-toggle-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--hw-border);
-      background: transparent;
-      color: var(--hw-muted);
-      font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      cursor: pointer;
-      transition: all .15s;
-      user-select: none;
-    }
-    .hw-toggle-btn:hover {
-      border-color: var(--hw-accent);
-      color: var(--hw-text);
-    }
-    .hw-article.hw-open .hw-toggle-btn {
-      background: var(--hw-accent);
-      border-color: var(--hw-accent);
-      color: #1a1410;
+    .hw-card-tag {
+      font-size: 0.72rem;
+      background: #f0f0f0;
+      color: #555;
+      padding: 0.1rem 0.5rem;
+      border-radius: 10px;
       font-weight: 600;
+      text-transform: lowercase;
     }
-    .hw-chevron {
-      font-size: 9px;
-      transition: transform .2s;
-      display: inline-block;
-    }
-    .hw-article.hw-open .hw-chevron { transform: rotate(180deg); }
 
-    /* ── corpo colapsável ── */
-    .hw-article-body {
-      display: none;
-      border-top: 1px solid var(--hw-border);
+    .hw-card-date {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 0.35rem;
     }
-    .hw-article.hw-open .hw-article-body { display: block; }
 
-    /* ── highlights ── */
-    .hw-highlights {
-      padding: 14px 18px;
+    .hw-card-aside {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+      padding-top: 2px;
     }
+    .hw-card-count {
+      font-size: 0.75rem;
+      color: #aaa;
+      white-space: nowrap;
+    }
+    .hw-card-toggle-btn {
+      font-size: 0.75rem;
+      color: #777;
+      background: #f2f2f2;
+      border: 1px solid #ddd;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .hw-card-toggle-btn:hover { background: #e6e6e6; }
+    .hw-card.open .hw-card-toggle-btn { background: #e8e8e8; }
 
-    .hw-hl {
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-      background: var(--hw-surface);
-      border-left: 4px solid var(--hw-accent);
+    /* ── corpo colapsável ── */
+    .hw-card-body {
+      display: none;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+      padding: 1rem 1.1rem;
     }
-    .hw-hl-text {
-      margin: 0;
-      font-size: 14px;
-      font-style: italic;
-      line-height: 1.65;
-      color: var(--hw-text);
-    }
-    .hw-hl-note {
-      margin: 8px 0 0;
-      padding-top: 8px;
-      border-top: 1px solid var(--hw-border);
-      font-size: 12px;
-      font-style: normal;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--hw-muted);
-    }
+    .hw-card.open .hw-card-body { display: block; }
 
     /* ── page comment ── */
     .hw-page-comment {
-      margin: 0;
-      padding: 10px 18px;
-      border-top: 1px solid var(--hw-border);
-      font-size: 13px;
       font-style: italic;
-      color: var(--hw-muted);
+      color: #555;
+      margin: 0 0 1rem;
+      padding: 0.5rem 0 0.5rem 1rem;
+      border-left: 3px solid #eee;
+      font-size: 0.9rem;
     }
+
+    /* ── destaques ── */
+    .hw-hl-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .hw-hl {
+      padding: 0.55rem 0.8rem;
+      border-radius: 0 6px 6px 0;
+      border-left: 3px solid #ffd700;
+      /* bg definido inline por JS */
+    }
+    .hw-hl-text {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #222;
+    }
+    .hw-hl-note {
+      margin: 0.45rem 0 0;
+      font-size: 0.8rem;
+      color: #666;
+      font-style: italic;
+    }
+    .hw-hl-note::before { content: '💭 '; }
+
+    /* ── botão fechar ── */
+    .hw-hide-btn {
+      display: block;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      background: #f2f2f2;
+      border: 1px solid #ccc;
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .hw-hide-btn:hover { background: #e6e6e6; }
 
     /* ── estados ── */
     .hw-state {
+      padding: 3rem 1rem;
       text-align: center;
-      padding: 48px 24px;
-      color: var(--hw-muted);
-      font-size: 14px;
+      color: #888;
+      font-size: 0.95rem;
     }
 
     /* ── rodapé ── */
     .hw-footer {
-      margin-top: 20px;
+      margin-top: 1.5rem;
       text-align: right;
-      font-size: 11px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--hw-muted);
-      opacity: .5;
+      font-size: 0.72rem;
+      color: #ccc;
     }
     .hw-footer a { color: inherit; text-decoration: none; }
-    .hw-footer a:hover { opacity: 1; text-decoration: underline; }
-
-    /* ── responsivo ── */
-    @media (max-width: 480px) {
-      .hw-article-head  { padding: 12px 14px 8px; }
-      .hw-article-footer { padding: 0 14px 10px; }
-      .hw-highlights    { padding: 12px 14px; }
-      .hw-article-title { font-size: 14px; }
-      .hw-hl-text       { font-size: 13px; }
-      .hw-search        { font-size: 16px; /* evita zoom no iOS */ }
-    }
+    .hw-footer a:hover { text-decoration: underline; }
   `;
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -374,6 +368,27 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function getFaviconUrl(url) {
+    try {
+      const hostname = new URL(url).hostname;
+      return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+    } catch { return ''; }
+  }
+
+  function getDomain(url) {
+    try { return new URL(url).hostname; } catch { return url; }
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr).toLocaleDateString(
+        cfg.lang === 'en' ? 'en-US' : 'pt-BR',
+        { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' }
+      );
+    } catch { return dateStr; }
   }
 
   // ─── Fetch ───────────────────────────────────────────────────────────────────
@@ -412,9 +427,11 @@
 
     const allTags = [...new Set(articles.flatMap(a => a.tags || []))].sort();
 
-    let activeTags = new Set();
-    let searchTerm = '';
+    let activeTags  = new Set();
+    let searchTerm  = '';
     let tagsVisible = false;
+
+    // ── Filtragem ───────────────────────────────────────────────────────────────
 
     function filtered() {
       return articles.filter(a => {
@@ -437,85 +454,138 @@
       });
     }
 
+    // ── Gera HTML de um artigo ──────────────────────────────────────────────────
+
     function articleHTML(a, idx) {
-      const highlightsHTML = (a.highlights || []).map(h => {
-        const borderColor = COLOR_MAP[h.color] || h.color || cfg.accent;
+      const favicon   = getFaviconUrl(a.url);
+      const domain    = getDomain(a.url);
+      const count     = (a.highlights || []).length;
+      const dateStr   = formatDate(a.date);
+
+      const tagsHTML = (a.tags || []).map(tag =>
+        `<span class="hw-card-tag">${esc(tag)}</span>`
+      ).join('');
+
+      const hlHTML = (a.highlights || []).map(h => {
+        const color   = resolveColor(h.color);
+        const bgColor = hexToRgba(color, 0.10);
         return `
-          <div class="hw-hl" style="border-left-color:${esc(borderColor)}">
+          <div class="hw-hl" style="border-left-color:${color};background:${bgColor}">
             <p class="hw-hl-text">${esc(h.highlight)}</p>
-            ${h.highlight_note ? `<p class="hw-hl-note">${esc(h.highlight_note)}</p>` : ''}
+            ${h.highlight_note
+              ? `<p class="hw-hl-note">${esc(h.highlight_note)}</p>`
+              : ''}
           </div>`;
       }).join('');
 
-      const tagsHTML = (a.tags || []).map(tag =>
-        `<span class="hw-article-tag">${esc(tag)}</span>`
-      ).join('');
-
-      const count = (a.highlights || []).length;
-
       return `
-        <article class="hw-article" data-idx="${idx}">
-          <div class="hw-article-head">
-            <div class="hw-article-top">
-              <div class="hw-article-main">
-                <h3 class="hw-article-title">
-                  <a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
-                    ${esc(a.title || a.url)}
-                  </a>
-                </h3>
-                <div class="hw-article-meta">
-                  ${a.date ? `<span>${esc(a.date)}</span>` : ''}
-                  ${tagsHTML ? `<div class="hw-article-tags">${tagsHTML}</div>` : ''}
-                </div>
-              </div>
-              <span class="hw-article-count">${count} destaque${count !== 1 ? 's' : ''}</span>
+        <article class="hw-card" data-idx="${idx}">
+          <div class="hw-card-head">
+            ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy">` : ''}
+            <div class="hw-card-info">
+              <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
+                ${esc(a.title || a.url)}
+              </a>
+              <div class="hw-card-domain">${esc(domain)}</div>
+              ${tagsHTML ? `<div class="hw-card-tags">${tagsHTML}</div>` : ''}
+              ${dateStr  ? `<div class="hw-card-date">📅 ${esc(dateStr)}</div>` : ''}
+            </div>
+            <div class="hw-card-aside">
+              <span class="hw-card-count">${t.highlights(count)}</span>
+              <button class="hw-card-toggle-btn" data-idx="${idx}">${t.showMore}</button>
             </div>
           </div>
-          <div class="hw-article-footer">
-            <button class="hw-toggle-btn" aria-expanded="false">
-              <span class="hw-toggle-label">${t.showHl}</span>
-              <span class="hw-chevron">▼</span>
-            </button>
-          </div>
-          <div class="hw-article-body">
-            <div class="hw-highlights">${highlightsHTML}</div>
-            ${a.page_comment ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>` : ''}
+          <div class="hw-card-body">
+            ${a.page_comment
+              ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>`
+              : ''}
+            <div class="hw-hl-list">${hlHTML}</div>
+            <button class="hw-hide-btn" data-idx="${idx}">${t.hideMore}</button>
           </div>
         </article>`;
     }
 
+    // ── Monta o HTML estático da lista ──────────────────────────────────────────
+
     function refreshList() {
-      const list = root.querySelector('.hw-list');
-      const items = filtered();
+      const listEl = root.querySelector('.hw-list');
+      const items  = filtered();
+
       if (!items.length) {
-        list.innerHTML = `<div class="hw-state">🔍 ${t.noMatch}</div>`;
+        listEl.innerHTML = `<div class="hw-state">🔍 ${t.noMatch}</div>`;
         return;
       }
-      list.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
 
-      list.querySelectorAll('.hw-toggle-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const article = btn.closest('.hw-article');
-          const isOpen  = article.classList.toggle('hw-open');
-          btn.setAttribute('aria-expanded', isOpen);
-          btn.querySelector('.hw-toggle-label').textContent = isOpen ? t.hideHl : t.showHl;
+      listEl.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
+
+      // Bind toggle — clique no cabeçalho do card (exceto no link)
+      listEl.querySelectorAll('.hw-card-head').forEach(head => {
+        head.addEventListener('click', e => {
+          if (e.target.tagName === 'A') return;
+          toggleCard(head.closest('.hw-card'));
+        });
+      });
+
+      // Bind botão "ver destaques"
+      listEl.querySelectorAll('.hw-card-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          toggleCard(btn.closest('.hw-card'));
+        });
+      });
+
+      // Bind botão "ocultar"
+      listEl.querySelectorAll('.hw-hide-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          closeCard(btn.closest('.hw-card'));
         });
       });
     }
 
+    function toggleCard(card) {
+      const isOpen = card.classList.contains('open');
+      isOpen ? closeCard(card) : openCard(card);
+    }
+
+    function openCard(card) {
+      card.classList.add('open');
+      const btn = card.querySelector('.hw-card-toggle-btn');
+      if (btn) btn.textContent = t.hideMore;
+    }
+
+    function closeCard(card) {
+      card.classList.remove('open');
+      const btn = card.querySelector('.hw-card-toggle-btn');
+      if (btn) btn.textContent = t.showMore;
+    }
+
+    // ── Atualiza estado visual das tags ─────────────────────────────────────────
+
     function refreshTagButtons() {
       root.querySelectorAll('.hw-tag').forEach(btn => {
-        btn.classList.toggle('hw-tag-active', activeTags.has(btn.dataset.tag));
+        btn.classList.toggle('active', activeTags.has(btn.dataset.tag));
       });
-      const toggle = root.querySelector('.hw-tags-toggle');
-      const count  = activeTags.size;
-      toggle.textContent = count > 0 ? `${t.tagsActive} (${count}) ✕` : `${t.tags} ↓`;
-      toggle.classList.toggle('has-active', count > 0);
+
+      const toggleBtn = root.querySelector('.hw-tags-toggle');
+      if (!toggleBtn) return;
+
+      const count = activeTags.size;
+      if (count > 0) {
+        toggleBtn.textContent = `${t.clearTags} (${count}) ✕`;
+        toggleBtn.classList.add('has-active');
+      } else {
+        toggleBtn.textContent = tagsVisible ? t.hideTags : t.showTags;
+        toggleBtn.classList.remove('has-active');
+      }
     }
 
     function refreshTagsVisibility() {
-      root.querySelector('.hw-tags').classList.toggle('hw-tags-hidden', !tagsVisible);
+      const wrap = root.querySelector('.hw-tags-wrap');
+      if (wrap) wrap.classList.toggle('visible', tagsVisible);
     }
+
+    // ── Monta a UI completa ─────────────────────────────────────────────────────
 
     const tagButtons = allTags.map(tag =>
       `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
@@ -525,22 +595,24 @@
       <div class="hw-controls">
         <input class="hw-search" type="search" placeholder="${t.search}" autocomplete="off">
         ${allTags.length ? `
-          <div class="hw-tags-row">
-            <button class="hw-tags-toggle">${t.tags} ↓</button>
+          <div class="hw-tags-bar">
+            <button class="hw-tags-toggle">${t.showTags}</button>
           </div>
-          <div class="hw-tags hw-tags-hidden">${tagButtons}</div>
+          <div class="hw-tags-wrap">${tagButtons}</div>
         ` : ''}
       </div>
       <div class="hw-list"></div>
       <div class="hw-footer">
-        <a href="https://eugrifo.netlify.app/"
-           target="_blank" rel="noopener">✦ ${t.credit}</a>
+        <a href="https://github.com/od3zza/eugrifo" target="_blank" rel="noopener">✦ ${t.credit}</a>
       </div>`;
 
     refreshList();
 
+    // ── Busca ───────────────────────────────────────────────────────────────────
+
     root.querySelector('.hw-search').addEventListener('input', e => {
       searchTerm = e.target.value.trim();
+      // Desativa tags ao digitar na busca
       if (searchTerm && activeTags.size > 0) {
         activeTags.clear();
         refreshTagButtons();
@@ -548,7 +620,10 @@
       refreshList();
     });
 
+    // ── Toggle visibilidade das tags ────────────────────────────────────────────
+
     root.querySelector('.hw-tags-toggle')?.addEventListener('click', () => {
+      // Se há tags ativas, limpa tudo
       if (activeTags.size > 0) {
         activeTags.clear();
         tagsVisible = false;
@@ -558,11 +633,11 @@
         return;
       }
       tagsVisible = !tagsVisible;
-      root.querySelector('.hw-tags-toggle').textContent = tagsVisible
-        ? `${t.tags} ↑`
-        : `${t.tags} ↓`;
+      refreshTagButtons();
       refreshTagsVisibility();
     });
+
+    // ── Clique nas tags — multi-select ──────────────────────────────────────────
 
     root.querySelectorAll('.hw-tag').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -571,6 +646,7 @@
           activeTags.delete(tag);
         } else {
           activeTags.add(tag);
+          // Limpa busca ao selecionar tag
           const searchEl = root.querySelector('.hw-search');
           if (searchEl) { searchEl.value = ''; searchTerm = ''; }
         }
@@ -585,44 +661,30 @@
   function init() {
     const root = document.getElementById(cfg.target);
     if (!root) {
-      console.error(`[Highlights Widget] Container #${cfg.target} não encontrado.`);
+      console.error(`[eugrifo widget] Container #${cfg.target} não encontrado.`);
       return;
     }
 
-    // CSS base — injeta uma vez
-    if (!document.getElementById('hw-styles')) {
+    // Injeta estilos uma única vez por página
+    if (!document.getElementById('eugrifo-widget-styles')) {
       const style = document.createElement('style');
-      style.id = 'hw-styles';
+      style.id = 'eugrifo-widget-styles';
       style.textContent = CSS;
       document.head.appendChild(style);
     }
 
-    // CSS customizado salvo pela extensão — sobrescreve o base
-    if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
-      chrome.storage.sync.get(['widgetCustomCss'], result => {
-        const customCss = result.widgetCustomCss?.trim();
-        if (!customCss) return;
-        if (!document.getElementById('hw-custom-styles')) {
-          const styleEl = document.createElement('style');
-          styleEl.id = 'hw-custom-styles';
-          styleEl.textContent = customCss;
-          document.head.appendChild(styleEl);
-        }
-      });
-    }
-
-    root.className = (root.className + ' hw').trim();
+    root.classList.add('hw');
     root.innerHTML = `<div class="hw-state">🌿 ${t.loading}</div>`;
 
     if (!cfg.owner || !cfg.repo) {
-      root.innerHTML = `<div class="hw-state">⚠️ Configure data-owner e data-repo no script.</div>`;
+      root.innerHTML = `<div class="hw-state">⚠️ Configure data-owner e data-repo no &lt;script&gt;.</div>`;
       return;
     }
 
     fetchData()
       .then(data => render(root, data))
       .catch(err => {
-        console.error('[Highlights Widget]', err);
+        console.error('[eugrifo widget]', err);
         root.innerHTML = `<div class="hw-state">❌ ${err.message}</div>`;
       });
   }
@@ -632,4 +694,5 @@
   } else {
     init();
   }
+
 })();
