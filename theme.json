@@ -1,0 +1,43 @@
+{
+  "_comment": "Este arquivo controla toda a aparência da extensão eugrifo.",
+  "_comment2": "Ao salvar uma nova versão aqui, todos os usuários com a extensão instalada recebem uma notificação no popup para aplicar as mudanças — sem reinstalar.",
+
+  "version": "1.0.0",
+  "changelog": "Versão inicial com paleta escura e laranja.",
+
+  "colors": {
+    "bg":           "#161616",
+    "bgSurface":    "#1f1f1f",
+    "bgDeep":       "#0e0e0e",
+    "border":       "#2e2e2e",
+    "accent":       "#e73e18",
+    "accentHover":  "#c93210",
+    "text":         "#eddfd8",
+    "textMuted":    "#888888",
+    "textDisabled": "#555555",
+
+    "statusSuccessBg":     "#1a2e1a",
+    "statusSuccessText":   "#7ec87e",
+    "statusSuccessBorder": "#2a4a2a",
+    "statusErrorBg":       "#2e1a1a",
+    "statusErrorText":     "#e07070",
+    "statusErrorBorder":   "#4a2a2a",
+    "statusInfoBg":        "#1a1f2e",
+    "statusInfoText":      "#7090c8",
+    "statusInfoBorder":    "#2a3050",
+
+    "highlightColors": ["#e73e18", "#90ee90", "#add8e6", "#ffb6c1"]
+  },
+
+  "typography": {
+    "fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    "fontSizeBase": "14px",
+    "fontSizeSmall": "12px",
+    "fontSizeTitle": "17px"
+  },
+
+  "shape": {
+    "borderRadius": "6px",
+    "borderRadiusLarge": "8px"
+  }
+}
