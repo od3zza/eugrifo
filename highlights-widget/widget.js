@@ -101,33 +101,31 @@
 
   const CSS = `
     .hw {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      color: #1a1a1a;
+      font-family: inherit;
       line-height: 1.6;
       max-width: 720px;
     }
     .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
     /* ── controles ── */
-    .hw-controls {
-      margin-bottom: 2rem;
-    }
+    .hw-controls { margin-bottom: 1rem; }
 
     .hw-search {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid #ddd;
+      padding: 0.7rem 0.9rem;
+      border: 3px solid currentColor;
       border-radius: 6px;
-      font-size: 1rem;
+      font-size: inherit;
       font-family: inherit;
+      background: transparent;
       color: inherit;
-      background: #fff;
       outline: none;
-      transition: border-color .2s;
+      transition: border-color 0.15s;
       margin-bottom: 0.75rem;
+      opacity: 0.9;
     }
-    .hw-search::placeholder { color: #aaa; }
-    .hw-search:focus { border-color: #999; }
+    .hw-search::placeholder { opacity: 0.4; }
+    .hw-search:focus { opacity: 0.6; }
 
     .hw-tags-bar {
       display: flex;
@@ -137,23 +135,22 @@
     }
 
     .hw-tags-toggle {
-      padding: 0.25rem 0.7rem;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      background: transparent;
-      color: #666;
-      font-size: 0.8rem;
       font-family: inherit;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: transparent;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
       cursor: pointer;
-      transition: all .15s;
+      color: inherit;
+      opacity: 0.5;
+      transition: opacity 0.15s;
       white-space: nowrap;
     }
-    .hw-tags-toggle:hover { border-color: #999; color: #333; }
-    .hw-tags-toggle.has-active {
-      background: #000;
-      border-color: #000;
-      color: #fff;
-    }
+    .hw-tags-toggle:hover { opacity: 1; }
+    .hw-tags-toggle.has-active { opacity: 1; font-weight: 700; }
 
     .hw-tags-wrap {
       width: 100%;
@@ -163,190 +160,224 @@
     .hw-tags-wrap.visible { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
     .hw-tag {
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      background: #f5f5f5;
-      color: #333;
-      font-size: 0.8rem;
       font-family: inherit;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: inherit;
+      border: 1px solid currentColor;
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all .15s;
+      background: none;
+      opacity: 0.45;
+      transition: opacity 0.15s, background 0.15s;
     }
-    .hw-tag:hover { border-color: #bbb; background: #e8e8e8; }
-    .hw-tag.active {
-      background: #000;
-      border-color: #000;
-      color: #fff;
-    }
+    .hw-tag:hover { opacity: 1; }
+    .hw-tag.active { opacity: 1; background: currentColor; color: #fff; }
 
     /* ── lista ── */
     .hw-list { display: flex; flex-direction: column; gap: 0; }
 
     /* ── card de artigo ── */
     .hw-card {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      margin-bottom: 1.2rem;
+      border: 3px solid currentColor;
+      opacity: 0.9;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
       overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,.04);
-      transition: box-shadow .2s;
+      transition: opacity 0.2s;
     }
-    .hw-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .hw-card:hover { opacity: 1; }
 
     .hw-card-head {
       display: flex;
       align-items: flex-start;
       gap: 0.9rem;
-      padding: 1rem 1.1rem;
+      padding: 1.1rem 1.2rem;
       cursor: pointer;
       user-select: none;
-      position: relative;
     }
 
     .hw-favicon {
+      flex-shrink: 0;
       width: 28px;
       height: 28px;
-      border-radius: 4px;
-      flex-shrink: 0;
       margin-top: 2px;
+      border-radius: 4px;
       object-fit: contain;
+      display: block;
     }
 
     .hw-card-info { flex: 1; min-width: 0; }
 
     .hw-card-title {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #111;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      color: inherit;
       text-decoration: none;
       display: block;
       margin-bottom: 0.25rem;
+      line-height: 1.4;
       pointer-events: none;
     }
     .hw-card-head:hover .hw-card-title { text-decoration: underline; }
 
     .hw-card-domain {
-      font-size: 0.8rem;
-      color: #888;
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: inherit;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .hw-card-date {
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: inherit;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 0.15rem;
     }
 
     .hw-card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.3rem;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
     .hw-card-tag {
-      font-size: 0.72rem;
-      background: #f0f0f0;
-      color: #555;
-      padding: 0.1rem 0.5rem;
-      border-radius: 10px;
-      font-weight: 600;
-      text-transform: lowercase;
-    }
-
-    .hw-card-date {
-      font-size: 0.75rem;
-      color: #aaa;
-      margin-top: 0.35rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: inherit;
+      border: 1px solid currentColor;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      opacity: 0.5;
     }
 
     .hw-card-aside {
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
-      flex-shrink: 0;
-      padding-top: 2px;
+      gap: 0.4rem;
+      margin-top: 2px;
     }
     .hw-card-count {
-      font-size: 0.75rem;
-      color: #aaa;
+      font-family: inherit;
+      font-size: 0.78rem;
+      color: inherit;
+      opacity: 0.5;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
       white-space: nowrap;
     }
-    .hw-card-toggle-btn {
-      font-size: 0.75rem;
-      color: #777;
-      background: #f2f2f2;
-      border: 1px solid #ddd;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
+    .hw-expand-icon {
+      font-size: 0.7rem;
+      opacity: 0.5;
+      transition: transform 0.2s;
+      line-height: 1;
     }
-    .hw-card-toggle-btn:hover { background: #e6e6e6; }
-    .hw-card.open .hw-card-toggle-btn { background: #e8e8e8; }
+    .hw-card.open .hw-expand-icon { transform: rotate(180deg); }
 
     /* ── corpo colapsável ── */
     .hw-card-body {
       display: none;
-      border-top: 1px solid #eee;
-      background: #fafafa;
-      padding: 1rem 1.1rem;
+      border-top: 1px solid currentColor;
+      padding: 1.2rem;
+      background: rgba(0,0,0,0.03);
     }
     .hw-card.open .hw-card-body { display: block; }
 
     /* ── page comment ── */
     .hw-page-comment {
+      font-family: inherit;
+      font-size: 1rem;
       font-style: italic;
-      color: #555;
-      margin: 0 0 1rem;
+      line-height: 1.7;
+      color: inherit;
+      opacity: 0.6;
+      border-left: 3px solid currentColor;
       padding: 0.5rem 0 0.5rem 1rem;
-      border-left: 3px solid #eee;
-      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
     }
 
     /* ── destaques ── */
     .hw-hl-list {
       display: flex;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0;
     }
 
     .hw-hl {
-      padding: 0.55rem 0.8rem;
-      border-radius: 0 6px 6px 0;
-      border-left: 3px solid #ffd700;
-      /* bg definido inline por JS */
+      margin-bottom: 1.2rem;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      border-left: 3px solid transparent;
     }
+    .hw-hl:last-child { margin-bottom: 0; }
+
+    /* cores nomeadas legadas */
+    .hw-hl.yellow { background: rgba(253,223,142,0.25); border-left-color: #f0c040; }
+    .hw-hl.green  { background: rgba(92,230,92,0.15);  border-left-color: #4caf50; }
+    .hw-hl.blue   { background: rgba(130,169,245,0.2); border-left-color: #5c8ee0; }
+    .hw-hl.pink   { background: rgba(255,192,203,0.25); border-left-color: #e07090; }
+
     .hw-hl-text {
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: inherit;
       margin: 0;
-      font-size: 0.9rem;
-      line-height: 1.65;
-      color: #222;
     }
+
     .hw-hl-note {
-      margin: 0.45rem 0 0;
-      font-size: 0.8rem;
-      color: #666;
+      font-family: inherit;
+      font-size: 1rem;
       font-style: italic;
+      line-height: 1.7;
+      color: inherit;
+      opacity: 0.6;
+      margin-top: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255,255,255,0.6);
+      border-left: 2px solid currentColor;
+      border-radius: 0 3px 3px 0;
     }
-    .hw-hl-note::before { content: '💭 '; }
 
     /* ── botão fechar ── */
     .hw-hide-btn {
       display: block;
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      background: #f2f2f2;
-      border: 1px solid #ccc;
-      padding: 0.3rem 0.7rem;
+      margin-top: 1.5rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: transparent;
+      border: 1px solid currentColor;
       border-radius: 4px;
+      padding: 0.3rem 0.75rem;
       cursor: pointer;
-      transition: background 0.15s;
+      color: inherit;
+      opacity: 0.5;
+      transition: opacity 0.15s;
     }
-    .hw-hide-btn:hover { background: #e6e6e6; }
+    .hw-hide-btn:hover { opacity: 1; }
 
     /* ── estados ── */
     .hw-state {
       padding: 3rem 1rem;
       text-align: center;
-      color: #888;
-      font-size: 0.95rem;
+      font-style: italic;
+      font-family: inherit;
+      font-size: 1rem;
+      opacity: 0.5;
     }
 
     /* ── rodapé ── */
@@ -354,10 +385,15 @@
       margin-top: 1.5rem;
       text-align: right;
       font-size: 0.72rem;
-      color: #ccc;
+      opacity: 0.3;
     }
     .hw-footer a { color: inherit; text-decoration: none; }
-    .hw-footer a:hover { text-decoration: underline; }
+    .hw-footer a:hover { opacity: 1; text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .hw-card-head { padding: 0.9rem; gap: 0.7rem; }
+      .hw-card-body { padding: 0.9rem; }
+    }
   `;
 
   // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -467,13 +503,22 @@
       ).join('');
 
       const hlHTML = (a.highlights || []).map(h => {
-        const color   = resolveColor(h.color);
-        const bgColor = hexToRgba(color, 0.10);
+        // Cor: se for hex, injeta como inline style (cores customizadas)
+        // Se for nome legado (yellow/green/blue/pink), usa classe CSS
+        const rawColor = (h.color || 'yellow').toLowerCase();
+        const isNamed  = ['yellow','green','blue','pink','red'].includes(rawColor);
+        const colorAttr = isNamed
+          ? `class="hw-hl ${rawColor}"`
+          : (() => {
+              const hex = resolveColor(rawColor);
+              const bg  = hexToRgba(hex, 0.20);
+              return `class="hw-hl" style="border-left-color:${hex};background:${bg}"`;
+            })();
         return `
-          <div class="hw-hl" style="border-left-color:${color};background:${bgColor}">
-            <p class="hw-hl-text">${esc(h.highlight)}</p>
+          <div ${colorAttr}>
+            <div class="hw-hl-text">${esc(h.highlight)}</div>
             ${h.highlight_note
-              ? `<p class="hw-hl-note">${esc(h.highlight_note)}</p>`
+              ? `<div class="hw-hl-note">${esc(h.highlight_note)}</div>`
               : ''}
           </div>`;
       }).join('');
@@ -481,26 +526,27 @@
       return `
         <article class="hw-card" data-idx="${idx}">
           <div class="hw-card-head">
-            ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy">` : ''}
+            ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
             <div class="hw-card-info">
-              <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">
+              <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer"
+                 onclick="event.stopPropagation()">
                 ${esc(a.title || a.url)}
               </a>
               <div class="hw-card-domain">${esc(domain)}</div>
+              <div class="hw-card-date">${esc(dateStr)}</div>
               ${tagsHTML ? `<div class="hw-card-tags">${tagsHTML}</div>` : ''}
-              ${dateStr  ? `<div class="hw-card-date">📅 ${esc(dateStr)}</div>` : ''}
             </div>
             <div class="hw-card-aside">
-              <span class="hw-card-count">${t.highlights(count)}</span>
-              <button class="hw-card-toggle-btn" data-idx="${idx}">${t.showMore}</button>
+              <span class="hw-card-count">${count} nota${count !== 1 ? 's' : ''}</span>
+              <span class="hw-expand-icon">▼</span>
             </div>
           </div>
           <div class="hw-card-body">
             ${a.page_comment
-              ? `<p class="hw-page-comment">${esc(a.page_comment)}</p>`
+              ? `<div class="hw-page-comment">${esc(a.page_comment)}</div>`
               : ''}
             <div class="hw-hl-list">${hlHTML}</div>
-            <button class="hw-hide-btn" data-idx="${idx}">${t.hideMore}</button>
+            <button class="hw-hide-btn" data-idx="${idx}">fechar ↑</button>
           </div>
         </article>`;
     }
@@ -526,15 +572,7 @@
         });
       });
 
-      // Bind botão "ver destaques"
-      listEl.querySelectorAll('.hw-card-toggle-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          toggleCard(btn.closest('.hw-card'));
-        });
-      });
-
-      // Bind botão "ocultar"
+      // Bind botão "fechar"
       listEl.querySelectorAll('.hw-hide-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
@@ -550,14 +588,10 @@
 
     function openCard(card) {
       card.classList.add('open');
-      const btn = card.querySelector('.hw-card-toggle-btn');
-      if (btn) btn.textContent = t.hideMore;
     }
 
     function closeCard(card) {
       card.classList.remove('open');
-      const btn = card.querySelector('.hw-card-toggle-btn');
-      if (btn) btn.textContent = t.showMore;
     }
 
     // ── Atualiza estado visual das tags ─────────────────────────────────────────
