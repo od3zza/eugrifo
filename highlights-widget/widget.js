@@ -108,7 +108,7 @@
     .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
     /* ── controles ── */
-    .hw-controls { margin-bottom: 1rem; }
+    .hw-controls { margin-bottom: 1.5rem; }
 
     .hw-search {
       width: 100%;
@@ -122,21 +122,14 @@
       outline: none;
       transition: border-color 0.15s;
       margin-bottom: 0.75rem;
-      opacity: 0.9;
+      opacity: 0.85;
     }
-    .hw-search::placeholder { opacity: 0.4; }
-    .hw-search:focus { opacity: 0.6; }
-
-    .hw-tags-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
+    .hw-search::placeholder { opacity: 0.35; }
+    .hw-search:focus { opacity: 1; border-color: currentColor; }
 
     .hw-tags-toggle {
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       background: transparent;
@@ -145,12 +138,17 @@
       padding: 0.3rem 0.75rem;
       cursor: pointer;
       color: inherit;
-      opacity: 0.5;
-      transition: opacity 0.15s;
+      opacity: 0.45;
+      transition: opacity 0.15s, background 0.15s;
       white-space: nowrap;
     }
     .hw-tags-toggle:hover { opacity: 1; }
-    .hw-tags-toggle.has-active { opacity: 1; font-weight: 700; }
+    .hw-tags-toggle.has-active {
+      opacity: 1;
+      font-weight: 700;
+      background: currentColor;
+      color: #fff;
+    }
 
     .hw-tags-wrap {
       width: 100%;
@@ -161,7 +159,7 @@
 
     .hw-tag {
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
       color: inherit;
@@ -170,47 +168,52 @@
       border-radius: 4px;
       cursor: pointer;
       background: none;
-      opacity: 0.45;
-      transition: opacity 0.15s, background 0.15s;
+      opacity: 0.4;
+      transition: all 0.15s;
     }
-    .hw-tag:hover { opacity: 1; }
+    .hw-tag:hover { opacity: 1; background: currentColor; color: #fff; }
     .hw-tag.active { opacity: 1; background: currentColor; color: #fff; }
 
     /* ── lista ── */
-    .hw-list { display: flex; flex-direction: column; gap: 0; }
+    .hw-list { display: flex; flex-direction: column; }
 
-    /* ── card de artigo ── */
+    /* ── card ── */
     .hw-card {
       border: 3px solid currentColor;
-      opacity: 0.9;
       border-radius: 6px;
       margin-bottom: 1.5rem;
       overflow: hidden;
+      opacity: 0.85;
       transition: opacity 0.2s;
     }
     .hw-card:hover { opacity: 1; }
 
+    /* ── cabeçalho — layout em coluna, sem aside lateral ── */
     .hw-card-head {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.9rem;
       padding: 1.1rem 1.2rem;
       cursor: pointer;
       user-select: none;
     }
 
-    .hw-favicon {
-      flex-shrink: 0;
-      width: 28px;
-      height: 28px;
-      margin-top: 2px;
-      border-radius: 4px;
-      object-fit: contain;
-      display: block;
+    .hw-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-bottom: 0.6rem;
     }
 
-    .hw-card-info { flex: 1; min-width: 0; }
+    .hw-favicon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      margin-top: 3px;
+      border-radius: 3px;
+      object-fit: contain;
+      display: block;
+      opacity: 0.8;
+    }
 
+    /* título — link real, abre em nova aba */
     .hw-card-title {
       font-family: inherit;
       font-weight: 700;
@@ -218,80 +221,68 @@
       color: inherit;
       text-decoration: none;
       display: block;
-      margin-bottom: 0.25rem;
       line-height: 1.4;
-      pointer-events: none;
     }
-    .hw-card-head:hover .hw-card-title { text-decoration: underline; }
+    .hw-card-title:hover { text-decoration: underline; }
 
-    .hw-card-domain {
+    /* meta — domínio, data, tags — linha única abaixo do título */
+    .hw-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1rem;
       font-family: inherit;
-      font-size: 0.78rem;
-      color: inherit;
-      opacity: 0.5;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-    }
-
-    .hw-card-date {
-      font-family: inherit;
-      font-size: 0.78rem;
-      color: inherit;
       opacity: 0.5;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-top: 0.15rem;
     }
 
     .hw-card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.3rem;
-      margin-top: 0.5rem;
     }
     .hw-card-tag {
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
       color: inherit;
       border: 1px solid currentColor;
       padding: 0.1rem 0.45rem;
       border-radius: 4px;
-      opacity: 0.5;
+      opacity: 0.7;
     }
 
-    .hw-card-aside {
-      flex-shrink: 0;
+    /* rodapé do cabeçalho — contagem + chevron na mesma linha */
+    .hw-card-foot {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.4rem;
-      margin-top: 2px;
-    }
-    .hw-card-count {
-      font-family: inherit;
-      font-size: 0.78rem;
-      color: inherit;
-      opacity: 0.5;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid currentColor;
+      opacity: 0.4;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      white-space: nowrap;
     }
+    .hw-card.open .hw-card-foot { opacity: 0.7; }
+
     .hw-expand-icon {
-      font-size: 0.7rem;
-      opacity: 0.5;
+      font-size: 0.65rem;
       transition: transform 0.2s;
       line-height: 1;
     }
     .hw-card.open .hw-expand-icon { transform: rotate(180deg); }
 
-    /* ── corpo colapsável ── */
+    /* ── corpo ── */
     .hw-card-body {
       display: none;
       border-top: 1px solid currentColor;
       padding: 1.2rem;
-      background: rgba(0,0,0,0.03);
+      background: rgba(0,0,0,0.025);
     }
     .hw-card.open .hw-card-body { display: block; }
 
@@ -302,7 +293,7 @@
       font-style: italic;
       line-height: 1.7;
       color: inherit;
-      opacity: 0.6;
+      opacity: 0.55;
       border-left: 3px solid currentColor;
       padding: 0.5rem 0 0.5rem 1rem;
       margin-bottom: 1.5rem;
@@ -312,7 +303,6 @@
     .hw-hl-list {
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
 
     .hw-hl {
@@ -324,7 +314,7 @@
     .hw-hl:last-child { margin-bottom: 0; }
 
     /* cores nomeadas legadas */
-    .hw-hl.yellow { background: rgba(253,223,142,0.25); border-left-color: #f0c040; }
+    .hw-hl.yellow { background: rgba(253,223,142,0.25); border-left-color: #e6b800; }
     .hw-hl.green  { background: rgba(92,230,92,0.15);  border-left-color: #4caf50; }
     .hw-hl.blue   { background: rgba(130,169,245,0.2); border-left-color: #5c8ee0; }
     .hw-hl.pink   { background: rgba(255,192,203,0.25); border-left-color: #e07090; }
@@ -339,14 +329,14 @@
 
     .hw-hl-note {
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-style: italic;
       line-height: 1.7;
       color: inherit;
       opacity: 0.6;
       margin-top: 0.6rem;
       padding: 0.5rem 0.75rem;
-      background: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.55);
       border-left: 2px solid currentColor;
       border-radius: 0 3px 3px 0;
     }
@@ -356,7 +346,7 @@
       display: block;
       margin-top: 1.5rem;
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       background: transparent;
@@ -365,7 +355,7 @@
       padding: 0.3rem 0.75rem;
       cursor: pointer;
       color: inherit;
-      opacity: 0.5;
+      opacity: 0.45;
       transition: opacity 0.15s;
     }
     .hw-hide-btn:hover { opacity: 1; }
@@ -377,7 +367,7 @@
       font-style: italic;
       font-family: inherit;
       font-size: 1rem;
-      opacity: 0.5;
+      opacity: 0.45;
     }
 
     /* ── rodapé ── */
@@ -385,14 +375,16 @@
       margin-top: 1.5rem;
       text-align: right;
       font-size: 0.72rem;
-      opacity: 0.3;
+      opacity: 0.25;
     }
     .hw-footer a { color: inherit; text-decoration: none; }
     .hw-footer a:hover { opacity: 1; text-decoration: underline; }
 
+    /* ── responsivo ── */
     @media (max-width: 600px) {
-      .hw-card-head { padding: 0.9rem; gap: 0.7rem; }
+      .hw-card-head { padding: 0.9rem; }
       .hw-card-body { padding: 0.9rem; }
+      .hw-hl { padding: 0.7rem 0.8rem; }
     }
   `;
 
@@ -493,18 +485,16 @@
     // ── Gera HTML de um artigo ──────────────────────────────────────────────────
 
     function articleHTML(a, idx) {
-      const favicon   = getFaviconUrl(a.url);
-      const domain    = getDomain(a.url);
-      const count     = (a.highlights || []).length;
-      const dateStr   = formatDate(a.date);
+      const favicon  = getFaviconUrl(a.url);
+      const domain   = getDomain(a.url);
+      const count    = (a.highlights || []).length;
+      const dateStr  = formatDate(a.date);
 
       const tagsHTML = (a.tags || []).map(tag =>
         `<span class="hw-card-tag">${esc(tag)}</span>`
       ).join('');
 
       const hlHTML = (a.highlights || []).map(h => {
-        // Cor: se for hex, injeta como inline style (cores customizadas)
-        // Se for nome legado (yellow/green/blue/pink), usa classe CSS
         const rawColor = (h.color || 'yellow').toLowerCase();
         const isNamed  = ['yellow','green','blue','pink','red'].includes(rawColor);
         const colorAttr = isNamed
@@ -523,21 +513,26 @@
           </div>`;
       }).join('');
 
+      // Meta: domínio · data · tags (tudo na mesma linha, opacidade baixa)
+      const metaParts = [
+        domain ? `<span>${esc(domain)}</span>` : '',
+        dateStr ? `<span>${esc(dateStr)}</span>` : '',
+        tagsHTML ? `<div class="hw-card-tags">${tagsHTML}</div>` : '',
+      ].filter(Boolean).join('');
+
       return `
         <article class="hw-card" data-idx="${idx}">
           <div class="hw-card-head">
-            ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
-            <div class="hw-card-info">
+            <div class="hw-card-top">
+              ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
               <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer"
                  onclick="event.stopPropagation()">
                 ${esc(a.title || a.url)}
               </a>
-              <div class="hw-card-domain">${esc(domain)}</div>
-              <div class="hw-card-date">${esc(dateStr)}</div>
-              ${tagsHTML ? `<div class="hw-card-tags">${tagsHTML}</div>` : ''}
             </div>
-            <div class="hw-card-aside">
-              <span class="hw-card-count">${count} nota${count !== 1 ? 's' : ''}</span>
+            ${metaParts ? `<div class="hw-card-meta">${metaParts}</div>` : ''}
+            <div class="hw-card-foot">
+              <span>${count} nota${count !== 1 ? 's' : ''}</span>
               <span class="hw-expand-icon">▼</span>
             </div>
           </div>
