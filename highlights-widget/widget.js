@@ -248,6 +248,7 @@
         cursor: pointer;
         transition: all .15s;
         white-space: nowrap;
+        opacity: 1;
       }
       .hw-tags-toggle:hover { border-color: var(--hw-accent); color: var(--hw-text); }
       .hw-tags-toggle.has-active {
@@ -255,6 +256,7 @@
         border-color: var(--hw-accent);
         color: #1a1410;
         font-weight: 600;
+                opacity: 1;
       }
 
       .hw-tags {
@@ -262,6 +264,7 @@
         flex-wrap: wrap;
         gap: 8px;
         margin-top: 10px;
+                opacity: 1;
       }
       .hw-tags.hw-tags-hidden { display: none; }
 
@@ -275,6 +278,7 @@
         font-family: inherit;
         cursor: pointer;
         transition: all .15s;
+                opacity: 1;
       }
       .hw-tag:hover { border-color: var(--hw-accent); color: var(--hw-text); }
       .hw-tag.hw-tag-active {
@@ -282,6 +286,7 @@
         border-color: var(--hw-accent);
         color: #1a1410;
         font-weight: 600;
+                opacity: 1;
       }
 
       /* ── lista de artigos ── */
