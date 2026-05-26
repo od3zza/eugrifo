@@ -178,6 +178,7 @@
 
     /* ── card ── */
     .hw-card {
+      width: 100%;
       background: var(--hw-bg-card);
       border: 1px solid var(--hw-border);
       border-radius: var(--hw-radius);
@@ -194,7 +195,7 @@
 
     .hw-card-top {
       display: flex;
-      align-items: flex-start;
+      align-items: left;
       gap: 0.8rem;
       margin-bottom: 0.6rem;
     }
