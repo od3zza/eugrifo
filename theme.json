@@ -2,7 +2,7 @@
   "_comment": "Este arquivo controla toda a aparência da extensão eugrifo.",
   "_comment2": "Ao salvar uma nova versão aqui, todos os usuários com a extensão instalada recebem uma notificação no popup para aplicar as mudanças — sem reinstalar.",
 
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": "Versão inicial com paleta escura e laranja.",
 
   "colors": {
@@ -31,9 +31,9 @@
 
   "typography": {
     "fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    "fontSizeBase": "14px",
-    "fontSizeSmall": "12px",
-    "fontSizeTitle": "17px"
+    "fontSizeBase": "12px",
+    "fontSizeSmall": "10px",
+    "fontSizeTitle": "16px"
   },
 
   "shape": {
