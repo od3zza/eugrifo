@@ -194,8 +194,7 @@
     }
 
     .hw-card-top {
-      display: flex;
-      align-items: left;
+      display: inline-flex;
       gap: 0.8rem;
       margin-bottom: 0.6rem;
     }
