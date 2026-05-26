@@ -97,44 +97,95 @@
     return JSON.parse(decoded);
   }
 
-  // ─── Aplica theme.json → CSS variables ───────────────────────────────────────
+  // ─── Lê estilos do site hospedeiro ───────────────────────────────────────────
 
   /**
-   * Mescla os valores do theme.json com fallbacks baseados no data-theme (light/dark).
-   * Retorna um objeto de variáveis CSS prontas para uso.
+   * Usa getComputedStyle para ler tipografia, cor e fundo diretamente do site.
+   * Retorna valores prontos para uso nas variáveis CSS do widget.
    */
-  function buildThemeVars(themeData) {
-    const isDark = cfg.theme === 'dark';
+  function readHostStyles(root) {
+    // Lê do body primeiro; cai no container do widget como fallback
+    const bodyStyle = getComputedStyle(document.body);
+    const rootStyle = getComputedStyle(root);
 
-    // Fallbacks quando não há theme.json
-    const defaults = {
-      accent:     cfg.accent,
-      bg:         isDark ? '#141414' : '#ffffff',
-      bgSurface:  isDark ? '#1e1e1e' : '#f8f8f6',
-      border:     isDark ? '#2a2a2a' : '#e8e4df',
-      text:       isDark ? '#e2ddd8' : '#2a2520',
-      textMuted:  isDark ? '#6b6560' : '#8a8480',
-      radius:     '10px',
-      radiusLg:   '10px',
-      fontFamily: "'Georgia', 'Times New Roman', serif",
-    };
+    // Cor de texto: prefere body, mas aceita o container
+    const text = bodyStyle.color || rootStyle.color || '#2a2520';
 
-    if (!themeData) return defaults;
+    // Fundo: sobe na árvore até achar um fundo não-transparente
+    function findBg(el) {
+      while (el && el !== document.documentElement) {
+        const bg = getComputedStyle(el).backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return bg;
+        el = el.parentElement;
+      }
+      return getComputedStyle(document.documentElement).backgroundColor || '#ffffff';
+    }
+    const bg = findBg(root);
 
-    const c = themeData.colors   || {};
-    const s = themeData.shape    || {};
-    const ty = themeData.typography || {};
+    // Tipografia
+    const fontFamily  = bodyStyle.fontFamily  || rootStyle.fontFamily  || 'inherit';
+    const lineHeight  = bodyStyle.lineHeight   || rootStyle.lineHeight  || '1.6';
+
+    // Opacidade do texto secundário: aplica 60% de opacidade sobre a cor de texto
+    // convertendo para rgba se necessário
+    function toMuted(color) {
+      // Tenta extrair rgb(a) e reduz a opacidade
+      const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (m) return `rgba(${m[1]}, ${m[2]}, ${m[3]}, 0.5)`;
+      return color;
+    }
+    const textMuted = toMuted(text);
+
+    // Superfície (cards, inputs): levemente diferente do fundo principal
+    // Mistura o fundo com um pouco de preto ou branco dependendo do tema
+    function deriveSurface(bgColor) {
+      const m = bgColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (!m) return bgColor;
+      const [r, g, b] = [+m[1], +m[2], +m[3]];
+      // Luminância aproximada: fundo claro → escurece levemente; escuro → clareia
+      const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      const shift = lum > 0.5 ? -12 : 12;
+      return `rgb(${Math.max(0,Math.min(255,r+shift))}, ${Math.max(0,Math.min(255,g+shift))}, ${Math.max(0,Math.min(255,b+shift))})`;
+    }
+    const bgSurface = deriveSurface(bg);
+
+    // Borda: usa a cor de texto com baixa opacidade
+    function deriveBorder(color) {
+      const m = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (m) return `rgba(${m[1]}, ${m[2]}, ${m[3]}, 0.15)`;
+      return 'rgba(0,0,0,0.12)';
+    }
+    const border = deriveBorder(text);
+
+    return { text, textMuted, bg, bgSurface, border, fontFamily, lineHeight };
+  }
+
+  // ─── Aplica theme.json → apenas accent e shape ────────────────────────────────
+
+  /**
+   * Do theme.json, o widget usa apenas:
+   *   - colors.accent       → cor principal dos destaques
+   *   - colors.highlightColors → cores por tipo de highlight
+   *   - shape.borderRadius  → arredondamento dos cards
+   * Tipografia, cor de texto, fundo e opacidade vêm do site hospedeiro.
+   */
+  function buildThemeVars(themeData, hostStyles) {
+    const c  = themeData?.colors || {};
+    const s  = themeData?.shape  || {};
 
     return {
-      accent:     c.accent      || defaults.accent,
-      bg:         c.bg          || defaults.bg,
-      bgSurface:  c.bgSurface   || defaults.bgSurface,
-      border:     c.border      || defaults.border,
-      text:       c.text        || defaults.text,
-      textMuted:  c.textMuted   || defaults.textMuted,
-      radius:     s.borderRadius      || defaults.radius,
-      radiusLg:   s.borderRadiusLarge || defaults.radiusLg,
-      fontFamily: ty.fontFamily || defaults.fontFamily,
+      // Do theme.json (ou data-accent como fallback)
+      accent:     c.accent             || cfg.accent,
+      radius:     s.borderRadius       || '10px',
+
+      // Do site hospedeiro
+      text:       hostStyles.text,
+      textMuted:  hostStyles.textMuted,
+      bg:         hostStyles.bg,
+      bgSurface:  hostStyles.bgSurface,
+      border:     hostStyles.border,
+      fontFamily: hostStyles.fontFamily,
+      lineHeight: hostStyles.lineHeight,
     };
   }
 
@@ -154,7 +205,7 @@
         font-family: ${vars.fontFamily};
         color: var(--hw-text);
         background: var(--hw-bg);
-        line-height: 1.6;
+        line-height: ${vars.lineHeight || '1.6'};
       }
       .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
 
@@ -391,7 +442,8 @@
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   function render(root, raw, themeData) {
-    const vars = buildThemeVars(themeData);
+    const hostStyles = readHostStyles(root);
+    const vars = buildThemeVars(themeData, hostStyles);
 
     // Injeta estilos (ou atualiza se já existir)
     let styleEl = document.getElementById('hw-styles');
