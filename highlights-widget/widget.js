@@ -252,7 +252,7 @@
       border: 1px solid currentColor;
       padding: 0.1rem 0.45rem;
       border-radius: 4px;
-      opacity: 0.7;
+      opacity: 1;
     }
 
     /* rodapé do cabeçalho — contagem + chevron na mesma linha */
@@ -268,7 +268,7 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    .hw-card.open .hw-card-foot { opacity: 0.7; }
+    .hw-card.open .hw-card-foot { opacity: 1; }
 
     .hw-expand-icon {
       font-size: 0.65rem;
