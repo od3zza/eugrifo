@@ -1,23 +1,8 @@
 /*!
- * eugrifo — Highlights Widget  v4.0
+ * eugrifo — Highlights Widget  v4.1
  * Exibe seu feed de destaques em qualquer site.
- *
- * Como usar:
- *   <div id="meus-grifos"></div>
- *   <script
- *     src="https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"
- *     data-owner="seu-usuario"
- *     data-repo="seu-repositorio"
- *     data-file="eugrifo-highlights.json"
- *     data-token="ghp_token_readonly"   ← opcional, repositórios privados
- *     data-lang="pt"                    ← pt | en
- *     data-target="meus-grifos">
- *   </script>
- *
- * NOTA: O visual é definido inteiramente pelo widget.js hospedado no GitHub.
- * Atualizar o arquivo lá reflete em todos os widgets instalados automaticamente
- * (via jsDelivr CDN, que faz cache por ~24h; force com @sha ou versão pinada).
  */
+
 (function () {
   'use strict';
 
@@ -73,7 +58,6 @@
   const t = copy[cfg.lang] || copy.pt;
 
   // ─── Resolução de cor ────────────────────────────────────────────────────────
-  // Aceita tanto nomes legados ("yellow", "blue"…) quanto hex direto ("#ffd700")
 
   const COLOR_NAMES = {
     yellow: '#ffd700',
@@ -83,29 +67,41 @@
     red:    '#f56565',
   };
 
-  // Mapeia cor para uma versão com 15% de opacidade para o fundo do card
   function resolveColor(color) {
     if (!color) return '#ffd700';
     if (color.startsWith('#')) return color;
     return COLOR_NAMES[color.toLowerCase()] || '#ffd700';
   }
 
-  function hexToRgba(hex, alpha) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
-
   // ─── CSS ─────────────────────────────────────────────────────────────────────
 
   const CSS = `
     .hw {
-      font-family: inherit;
+      /* ── API de Variáveis (Herança natural do site) ── */
+      --hw-font: inherit;
+      --hw-text-main: currentColor;
+      --hw-text-muted: color-mix(in srgb, currentColor 60%, transparent);
+      --hw-border: color-mix(in srgb, currentColor 20%, transparent);
+      --hw-border-focus: color-mix(in srgb, currentColor 60%, transparent);
+      
+      --hw-bg-card: transparent;
+      --hw-bg-body: color-mix(in srgb, currentColor 3%, transparent);
+      --hw-bg-note: color-mix(in srgb, currentColor 6%, transparent);
+      
+      --hw-radius: 6px;
+      --hw-radius-sm: 4px;
+
+      font-family: var(--hw-font);
+      color: var(--hw-text-main);
       line-height: 1.6;
       max-width: 720px;
     }
-    .hw *, .hw *::before, .hw *::after { box-sizing: border-box; }
+
+    /* Reset isolado para o widget */
+    .hw *, .hw *::before, .hw *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+    }
 
     /* ── controles ── */
     .hw-controls { margin-bottom: 1.5rem; }
@@ -113,8 +109,8 @@
     .hw-search {
       width: 100%;
       padding: 0.7rem 0.9rem;
-      border: 1px solid currentColor;
-      border-radius: 6px;
+      border: 1px solid var(--hw-border);
+      border-radius: var(--hw-radius);
       font-size: inherit;
       font-family: inherit;
       background: transparent;
@@ -122,10 +118,9 @@
       outline: none;
       transition: border-color 0.15s;
       margin-bottom: 0.75rem;
-      opacity: 0.85;
     }
-    .hw-search::placeholder { opacity: 0.35; }
-    .hw-search:focus { opacity: 1; border-color: currentColor; }
+    .hw-search::placeholder { color: var(--hw-text-muted); }
+    .hw-search:focus { border-color: var(--hw-border-focus); }
 
     .hw-tags-toggle {
       font-family: inherit;
@@ -133,21 +128,23 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       background: transparent;
-      border: 1px solid currentColor;
-      border-radius: 4px;
+      border: 1px solid var(--hw-border);
+      border-radius: var(--hw-radius-sm);
       padding: 0.3rem 0.75rem;
       cursor: pointer;
-      color: inherit;
-      opacity: 0.45;
-      transition: opacity 0.15s, background 0.15s;
+      color: var(--hw-text-muted);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
       white-space: nowrap;
     }
-    .hw-tags-toggle:hover { opacity: 1; }
+    .hw-tags-toggle:hover { 
+      color: var(--hw-text-main); 
+      border-color: var(--hw-border-focus); 
+    }
     .hw-tags-toggle.has-active {
-      opacity: 1;
       font-weight: 700;
-      background: currentColor;
-      color: #fff;
+      background: var(--hw-text-main);
+      color: var(--hw-bg-card); /* Usa a cor de fundo invertida */
+      border-color: var(--hw-text-main);
     }
 
     .hw-tags-wrap {
@@ -162,33 +159,33 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      color: inherit;
-      border: 1px solid currentColor;
+      color: var(--hw-text-muted);
+      border: 1px solid var(--hw-border);
       padding: 0.15rem 0.55rem;
-      border-radius: 4px;
+      border-radius: var(--hw-radius-sm);
       cursor: pointer;
       background: none;
-      opacity: 0.4;
       transition: all 0.15s;
     }
-    .hw-tag:hover { opacity: 1; background: currentColor; color: #fff; }
-    .hw-tag.active { opacity: 1; background: currentColor; color: #fff; }
+    .hw-tag:hover, .hw-tag.active { 
+      background: var(--hw-text-main); 
+      color: var(--hw-bg-card);
+      border-color: var(--hw-text-main);
+    }
 
     /* ── lista ── */
-    .hw-list { display: flex; flex-direction: column; }
+    .hw-list { display: flex; flex-direction: column; gap: 1.5rem; }
 
     /* ── card ── */
     .hw-card {
-      border: 1px solid currentColor;
-      border-radius: 6px;
-      margin-bottom: 1.5rem;
+      background: var(--hw-bg-card);
+      border: 1px solid var(--hw-border);
+      border-radius: var(--hw-radius);
       overflow: hidden;
-      opacity: 0.85;
-      transition: opacity 0.2s;
+      transition: border-color 0.2s;
     }
-    .hw-card:hover { opacity: 1; }
+    .hw-card:hover { border-color: var(--hw-border-focus); }
 
-    /* ── cabeçalho — layout em coluna, sem aside lateral ── */
     .hw-card-head {
       padding: 1.1rem 1.2rem;
       cursor: pointer;
@@ -210,10 +207,8 @@
       border-radius: 3px;
       object-fit: contain;
       display: block;
-      opacity: 0.8;
     }
 
-    /* título — link real, abre em nova aba */
     .hw-card-title {
       font-family: inherit;
       font-weight: 700;
@@ -225,7 +220,6 @@
     }
     .hw-card-title:hover { text-decoration: underline; }
 
-    /* meta — domínio, data, tags — linha única abaixo do título */
     .hw-card-meta {
       display: flex;
       flex-wrap: wrap;
@@ -235,7 +229,7 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      opacity: 0.5;
+      color: var(--hw-text-muted);
     }
 
     .hw-card-tags {
@@ -249,26 +243,24 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
       color: inherit;
-      border: 1px solid currentColor;
+      border: 1px solid var(--hw-border);
       padding: 0.1rem 0.45rem;
-      border-radius: 4px;
-      opacity: 1;
+      border-radius: var(--hw-radius-sm);
     }
 
-    /* rodapé do cabeçalho — contagem + chevron na mesma linha */
     .hw-card-foot {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 0.75rem;
       padding-top: 0.6rem;
-      border-top: 1px solid currentColor;
-      opacity: 0.4;
+      border-top: 1px solid var(--hw-border);
+      color: var(--hw-text-muted);
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    .hw-card.open .hw-card-foot { opacity: 1; }
+    .hw-card.open .hw-card-foot { color: var(--hw-text-main); }
 
     .hw-expand-icon {
       font-size: 0.65rem;
@@ -280,21 +272,19 @@
     /* ── corpo ── */
     .hw-card-body {
       display: none;
-      border-top: 1px solid currentColor;
+      border-top: 1px solid var(--hw-border);
       padding: 1.2rem;
-      background: rgba(0,0,0,0.025);
+      background: var(--hw-bg-body);
     }
     .hw-card.open .hw-card-body { display: block; }
 
-    /* ── page comment ── */
     .hw-page-comment {
       font-family: inherit;
       font-size: 1rem;
       font-style: italic;
       line-height: 1.7;
-      color: inherit;
-      opacity: 0.55;
-      border-left: 3px solid currentColor;
+      color: var(--hw-text-muted);
+      border-left: 3px solid var(--hw-border);
       padding: 0.5rem 0 0.5rem 1rem;
       margin-bottom: 1.5rem;
     }
@@ -303,28 +293,22 @@
     .hw-hl-list {
       display: flex;
       flex-direction: column;
+      gap: 1.2rem;
     }
 
     .hw-hl {
-      margin-bottom: 1.2rem;
       padding: 0.8rem 1rem;
-      border-radius: 4px;
-      border-left: 3px solid transparent;
+      border-radius: var(--hw-radius-sm);
+      border-left: 3px solid var(--hw-hl-color);
+      /* Usa color-mix para criar o fundo a partir da cor do destaque */
+      background: color-mix(in srgb, var(--hw-hl-color) 15%, transparent);
     }
-    .hw-hl:last-child { margin-bottom: 0; }
-
-    /* cores nomeadas legadas */
-    .hw-hl.yellow { background: rgba(253,223,142,0.25); border-left-color: #e6b800; }
-    .hw-hl.green  { background: rgba(92,230,92,0.15);  border-left-color: #4caf50; }
-    .hw-hl.blue   { background: rgba(130,169,245,0.2); border-left-color: #5c8ee0; }
-    .hw-hl.pink   { background: rgba(255,192,203,0.25); border-left-color: #e07090; }
 
     .hw-hl-text {
       font-family: inherit;
       font-size: 1rem;
       line-height: 1.7;
-      color: inherit;
-      margin: 0;
+      color: var(--hw-text-main);
     }
 
     .hw-hl-note {
@@ -332,13 +316,12 @@
       font-size: 0.9rem;
       font-style: italic;
       line-height: 1.7;
-      color: inherit;
-      opacity: 0.6;
-      margin-top: 0.6rem;
-      padding: 0.5rem 0.75rem;
-      background: rgba(255,255,255,0.55);
-      border-left: 2px solid currentColor;
-      border-radius: 0 3px 3px 0;
+      color: var(--hw-text-main);
+      margin-top: 0.8rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--hw-bg-note);
+      border-left: 2px solid var(--hw-border);
+      border-radius: 0 var(--hw-radius-sm) var(--hw-radius-sm) 0;
     }
 
     /* ── botão fechar ── */
@@ -350,40 +333,40 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
       background: transparent;
-      border: 1px solid currentColor;
-      border-radius: 4px;
+      border: 1px solid var(--hw-border);
+      border-radius: var(--hw-radius-sm);
       padding: 0.3rem 0.75rem;
       cursor: pointer;
-      color: inherit;
-      opacity: 0.45;
-      transition: opacity 0.15s;
+      color: var(--hw-text-muted);
+      transition: color 0.15s, border-color 0.15s;
     }
-    .hw-hide-btn:hover { opacity: 1; }
+    .hw-hide-btn:hover { 
+      color: var(--hw-text-main); 
+      border-color: var(--hw-border-focus); 
+    }
 
-    /* ── estados ── */
+    /* ── estados & rodapé ── */
     .hw-state {
       padding: 3rem 1rem;
       text-align: center;
       font-style: italic;
       font-family: inherit;
       font-size: 1rem;
-      opacity: 0.45;
+      color: var(--hw-text-muted);
     }
 
-    /* ── rodapé ── */
     .hw-footer {
       margin-top: 1.5rem;
       text-align: right;
       font-size: 0.72rem;
-      opacity: 0.25;
+      color: var(--hw-text-muted);
     }
     .hw-footer a { color: inherit; text-decoration: none; }
-    .hw-footer a:hover { opacity: 1; text-decoration: underline; }
+    .hw-footer a:hover { color: var(--hw-text-main); text-decoration: underline; }
 
     /* ── responsivo ── */
     @media (max-width: 600px) {
-      .hw-card-head { padding: 0.9rem; }
-      .hw-card-body { padding: 0.9rem; }
+      .hw-card-head, .hw-card-body { padding: 0.9rem; }
       .hw-hl { padding: 0.7rem 0.8rem; }
     }
   `;
@@ -459,8 +442,6 @@
     let searchTerm  = '';
     let tagsVisible = false;
 
-    // ── Filtragem ───────────────────────────────────────────────────────────────
-
     function filtered() {
       return articles.filter(a => {
         if (activeTags.size > 0) {
@@ -482,8 +463,6 @@
       });
     }
 
-    // ── Gera HTML de um artigo ──────────────────────────────────────────────────
-
     function articleHTML(a, idx) {
       const favicon  = getFaviconUrl(a.url);
       const domain   = getDomain(a.url);
@@ -495,25 +474,16 @@
       ).join('');
 
       const hlHTML = (a.highlights || []).map(h => {
-        const rawColor = (h.color || 'yellow').toLowerCase();
-        const isNamed  = ['yellow','green','blue','pink','red'].includes(rawColor);
-        const colorAttr = isNamed
-          ? `class="hw-hl ${rawColor}"`
-          : (() => {
-              const hex = resolveColor(rawColor);
-              const bg  = hexToRgba(hex, 0.20);
-              return `class="hw-hl" style="border-left-color:${hex};background:${bg}"`;
-            })();
+        const hex = resolveColor(h.color);
         return `
-          <div ${colorAttr}>
-            <div class="hw-hl-text">${esc(h.highlight)}</div>
+          <div class="hw-hl" style="--hw-hl-color: ${hex}">
+            <p class="hw-hl-text">${esc(h.highlight)}</p>
             ${h.highlight_note
-              ? `<div class="hw-hl-note">${esc(h.highlight_note)}</div>`
+              ? `<blockquote class="hw-hl-note">${esc(h.highlight_note)}</blockquote>`
               : ''}
           </div>`;
       }).join('');
 
-      // Meta: domínio · data · tags (tudo na mesma linha, opacidade baixa)
       const metaParts = [
         domain ? `<span>${esc(domain)}</span>` : '',
         dateStr ? `<span>${esc(dateStr)}</span>` : '',
@@ -546,8 +516,6 @@
         </article>`;
     }
 
-    // ── Monta o HTML estático da lista ──────────────────────────────────────────
-
     function refreshList() {
       const listEl = root.querySelector('.hw-list');
       const items  = filtered();
@@ -559,7 +527,6 @@
 
       listEl.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
 
-      // Bind toggle — clique no cabeçalho do card (exceto no link)
       listEl.querySelectorAll('.hw-card-head').forEach(head => {
         head.addEventListener('click', e => {
           if (e.target.tagName === 'A') return;
@@ -567,7 +534,6 @@
         });
       });
 
-      // Bind botão "fechar"
       listEl.querySelectorAll('.hw-hide-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
@@ -581,15 +547,8 @@
       isOpen ? closeCard(card) : openCard(card);
     }
 
-    function openCard(card) {
-      card.classList.add('open');
-    }
-
-    function closeCard(card) {
-      card.classList.remove('open');
-    }
-
-    // ── Atualiza estado visual das tags ─────────────────────────────────────────
+    function openCard(card) { card.classList.add('open'); }
+    function closeCard(card) { card.classList.remove('open'); }
 
     function refreshTagButtons() {
       root.querySelectorAll('.hw-tag').forEach(btn => {
@@ -614,8 +573,6 @@
       if (wrap) wrap.classList.toggle('visible', tagsVisible);
     }
 
-    // ── Monta a UI completa ─────────────────────────────────────────────────────
-
     const tagButtons = allTags.map(tag =>
       `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
     ).join('');
@@ -637,11 +594,8 @@
 
     refreshList();
 
-    // ── Busca ───────────────────────────────────────────────────────────────────
-
     root.querySelector('.hw-search').addEventListener('input', e => {
       searchTerm = e.target.value.trim();
-      // Desativa tags ao digitar na busca
       if (searchTerm && activeTags.size > 0) {
         activeTags.clear();
         refreshTagButtons();
@@ -649,10 +603,7 @@
       refreshList();
     });
 
-    // ── Toggle visibilidade das tags ────────────────────────────────────────────
-
     root.querySelector('.hw-tags-toggle')?.addEventListener('click', () => {
-      // Se há tags ativas, limpa tudo
       if (activeTags.size > 0) {
         activeTags.clear();
         tagsVisible = false;
@@ -666,8 +617,6 @@
       refreshTagsVisibility();
     });
 
-    // ── Clique nas tags — multi-select ──────────────────────────────────────────
-
     root.querySelectorAll('.hw-tag').forEach(btn => {
       btn.addEventListener('click', () => {
         const tag = btn.dataset.tag;
@@ -675,7 +624,6 @@
           activeTags.delete(tag);
         } else {
           activeTags.add(tag);
-          // Limpa busca ao selecionar tag
           const searchEl = root.querySelector('.hw-search');
           if (searchEl) { searchEl.value = ''; searchTerm = ''; }
         }
@@ -694,7 +642,6 @@
       return;
     }
 
-    // Injeta estilos uma única vez por página
     if (!document.getElementById('eugrifo-widget-styles')) {
       const style = document.createElement('style');
       style.id = 'eugrifo-widget-styles';
