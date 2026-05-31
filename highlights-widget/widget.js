@@ -1,12 +1,10 @@
 /*!
- * eugrifo — Highlights Widget  v4.1
- * Exibe seu feed de destaques em qualquer site.
+ * eugrifo — Highlights Widget  v5.0
  */
-
 (function () {
   'use strict';
 
-  // ─── Configuração ────────────────────────────────────────────────────────────
+  // ─── Configuração ─────────────────────────────────────────────────────────────
 
   const script =
     document.currentScript ||
@@ -21,43 +19,33 @@
     lang:   script?.getAttribute('data-lang')   || 'pt',
   };
 
-  // ─── i18n ────────────────────────────────────────────────────────────────────
+  // ─── i18n ─────────────────────────────────────────────────────────────────────
 
   const copy = {
     pt: {
-      loading:     'Carregando destaques…',
-      empty:       'Nenhum destaque encontrado.',
-      noMatch:     'Nenhum resultado para esta busca.',
-      search:      'Buscar nos destaques…',
-      showTags:    'filtrar por tag',
-      hideTags:    'ocultar tags',
-      clearTags:   'limpar filtros',
-      highlights:  (n) => `${n} destaque${n !== 1 ? 's' : ''}`,
-      showMore:    'ver destaques ↓',
-      hideMore:    'ocultar ↑',
-      note:        'nota',
-      error:       'Não foi possível carregar os destaques.',
-      credit:      'feito com eugrifo',
+      loading: 'Carregando destaques…',
+      empty:   'Nenhum destaque encontrado.',
+      noMatch: 'Nenhum resultado para esta busca.',
+      search:  'Buscar nos destaques…',
+      notes:   (n) => `${n} nota${n !== 1 ? 's' : ''}`,
+      close:   'fechar ↑',
+      error:   'Não foi possível carregar os destaques.',
+      credit:  'feito com eugrifo',
     },
     en: {
-      loading:     'Loading highlights…',
-      empty:       'No highlights yet.',
-      noMatch:     'No results for this search.',
-      search:      'Search highlights…',
-      showTags:    'filter by tag',
-      hideTags:    'hide tags',
-      clearTags:   'clear filters',
-      highlights:  (n) => `${n} highlight${n !== 1 ? 's' : ''}`,
-      showMore:    'show highlights ↓',
-      hideMore:    'hide ↑',
-      note:        'note',
-      error:       'Could not load highlights.',
-      credit:      'made with eugrifo',
+      loading: 'Loading highlights…',
+      empty:   'No highlights yet.',
+      noMatch: 'No results for this search.',
+      search:  'Search highlights…',
+      notes:   (n) => `${n} note${n !== 1 ? 's' : ''}`,
+      close:   'close ↑',
+      error:   'Could not load highlights.',
+      credit:  'made with eugrifo',
     },
   };
   const t = copy[cfg.lang] || copy.pt;
 
-  // ─── Resolução de cor ────────────────────────────────────────────────────────
+  // ─── Cor ──────────────────────────────────────────────────────────────────────
 
   const COLOR_NAMES = {
     yellow: '#ffd700',
@@ -73,37 +61,30 @@
     return COLOR_NAMES[color.toLowerCase()] || '#ffd700';
   }
 
-  // ─── CSS ─────────────────────────────────────────────────────────────────────
+  // ─── CSS ──────────────────────────────────────────────────────────────────────
 
   const CSS = `
     .hw {
-      /* ── API de Variáveis (Herança natural do site) ── */
-      --hw-font: inherit;
-      --hw-text-main: currentColor;
-      --hw-text-muted: color-mix(in srgb, currentColor 60%, transparent);
-      --hw-border: color-mix(in srgb, currentColor 20%, transparent);
-      --hw-border-focus: color-mix(in srgb, currentColor 60%, transparent);
-      
-      --hw-bg-card: transparent;
-      --hw-bg-body: color-mix(in srgb, currentColor 3%, transparent);
-      --hw-bg-note: color-mix(in srgb, currentColor 6%, transparent);
-      
-      --hw-radius: 6px;
-      --hw-radius-sm: 4px;
+      --hw-text-muted:    color-mix(in srgb, currentColor 55%, transparent);
+      --hw-border:        color-mix(in srgb, currentColor 18%, transparent);
+      --hw-border-focus:  color-mix(in srgb, currentColor 55%, transparent);
+      --hw-bg-body:       color-mix(in srgb, currentColor 3%, transparent);
+      --hw-bg-note:       color-mix(in srgb, currentColor 6%, transparent);
+      --hw-radius:        6px;
+      --hw-radius-sm:     4px;
 
-      font-family: var(--hw-font);
-      color: var(--hw-text-main);
+      font-family: inherit;
+      color: currentColor;
       line-height: 1.6;
       max-width: 720px;
     }
 
-    /* Reset isolado para o widget */
-    .hw *, .hw *::before, .hw *::after { 
-      box-sizing: border-box; 
-      margin: 0; 
+    .hw *, .hw *::before, .hw *::after {
+      box-sizing: border-box;
+      margin: 0;
     }
 
-    /* ── controles ── */
+    /* ── busca ── */
     .hw-controls { margin-bottom: 1.5rem; }
 
     .hw-search {
@@ -117,15 +98,9 @@
       color: inherit;
       outline: none;
       transition: border-color 0.15s;
-      margin-bottom: 0.75rem;
     }
     .hw-search::placeholder { color: var(--hw-text-muted); }
     .hw-search:focus { border-color: var(--hw-border-focus); }
-
-    .hw-tags-bar { display: none; }   /* removido — tags agora ficam só nos cards */
-    .hw-tags-wrap { display: none; }  /* removido */
-
-    .hw-tag { display: none; }        /* removido — substituído por hw-card-tag clicável */
 
     /* ── lista ── */
     .hw-list { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -133,7 +108,6 @@
     /* ── card ── */
     .hw-card {
       width: 100%;
-      background: var(--hw-bg-card);
       border: 1px solid var(--hw-border);
       border-radius: var(--hw-radius);
       overflow: hidden;
@@ -141,28 +115,14 @@
     }
     .hw-card:hover { border-color: var(--hw-border-focus); }
 
+    /* cabeçalho — clicável para expandir */
     .hw-card-head {
       padding: 1.1rem 1.2rem;
       cursor: pointer;
       user-select: none;
     }
 
-    .hw-card-top {
-      display: inline-flex;
-      gap: 0.8rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .hw-favicon {
-      flex-shrink: 0;
-      width: 22px;
-      height: 22px;
-      margin-top: 3px;
-      border-radius: 3px;
-      object-fit: contain;
-      display: block;
-    }
-
+    /* título — link que abre a fonte */
     .hw-card-title {
       font-family: inherit;
       font-weight: 700;
@@ -171,14 +131,16 @@
       text-decoration: none;
       display: block;
       line-height: 1.4;
+      margin-bottom: 0.5rem;
     }
     .hw-card-title:hover { text-decoration: underline; }
 
+    /* meta: domínio · data · tags */
     .hw-card-meta {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.5rem 1rem;
+      gap: 0.4rem 0.9rem;
       font-family: inherit;
       font-size: 0.75rem;
       text-transform: uppercase;
@@ -186,11 +148,9 @@
       color: var(--hw-text-muted);
     }
 
-    .hw-card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-    }
+    /* tags clicáveis dentro do card */
+    .hw-card-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
     .hw-card-tag {
       font-family: inherit;
       font-size: 0.72rem;
@@ -204,18 +164,15 @@
       background: none;
       transition: background 0.15s, color 0.15s, border-color 0.15s;
     }
-    .hw-card-tag:hover {
-      background: var(--hw-text-main);
-      color: var(--hw-bg-card, #fff);
-      border-color: var(--hw-text-main);
-    }
+    .hw-card-tag:hover,
     .hw-card-tag.active {
-      background: var(--hw-text-main);
-      color: var(--hw-bg-card, #fff);
-      border-color: var(--hw-text-main);
+      background: currentColor;
+      color: Canvas;
+      border-color: currentColor;
       font-weight: 700;
     }
 
+    /* rodapé do cabeçalho: contagem + chevron */
     .hw-card-foot {
       display: flex;
       align-items: center;
@@ -228,16 +185,15 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    .hw-card.open .hw-card-foot { color: var(--hw-text-main); }
+    .hw-card.open .hw-card-foot { color: currentColor; }
 
     .hw-expand-icon {
       font-size: 0.65rem;
       transition: transform 0.2s;
-      line-height: 1;
     }
     .hw-card.open .hw-expand-icon { transform: rotate(180deg); }
 
-    /* ── corpo ── */
+    /* ── corpo colapsável ── */
     .hw-card-body {
       display: none;
       border-top: 1px solid var(--hw-border);
@@ -246,6 +202,7 @@
     }
     .hw-card.open .hw-card-body { display: block; }
 
+    /* comentário da página */
     .hw-page-comment {
       font-family: inherit;
       font-size: 1rem;
@@ -258,25 +215,20 @@
     }
 
     /* ── destaques ── */
-    .hw-hl-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
+    .hw-hl-list { display: flex; flex-direction: column; gap: 1.2rem; }
 
     .hw-hl {
       padding: 0.8rem 1rem;
       border-radius: var(--hw-radius-sm);
-      border-left: 3px solid var(--hw-hl-color);
-      /* Usa color-mix para criar o fundo a partir da cor do destaque */
-      background: color-mix(in srgb, var(--hw-hl-color) 15%, transparent);
+      border-left: 3px solid var(--hw-hl-color, currentColor);
+      background: color-mix(in srgb, var(--hw-hl-color, currentColor) 12%, transparent);
     }
 
     .hw-hl-text {
       font-family: inherit;
       font-size: 1rem;
       line-height: 1.7;
-      color: var(--hw-text-main);
+      color: inherit;
     }
 
     .hw-hl-note {
@@ -284,7 +236,7 @@
       font-size: 0.9rem;
       font-style: italic;
       line-height: 1.7;
-      color: var(--hw-text-main);
+      color: inherit;
       margin-top: 0.8rem;
       padding: 0.6rem 0.8rem;
       background: var(--hw-bg-note);
@@ -292,7 +244,7 @@
       border-radius: 0 var(--hw-radius-sm) var(--hw-radius-sm) 0;
     }
 
-    /* ── botão fechar ── */
+    /* botão fechar */
     .hw-hide-btn {
       display: block;
       margin-top: 1.5rem;
@@ -308,21 +260,21 @@
       color: var(--hw-text-muted);
       transition: color 0.15s, border-color 0.15s;
     }
-    .hw-hide-btn:hover { 
-      color: var(--hw-text-main); 
-      border-color: var(--hw-border-focus); 
+    .hw-hide-btn:hover {
+      color: currentColor;
+      border-color: var(--hw-border-focus);
     }
 
-    /* ── estados & rodapé ── */
+    /* ── estados ── */
     .hw-state {
       padding: 3rem 1rem;
       text-align: center;
       font-style: italic;
-      font-family: inherit;
       font-size: 1rem;
       color: var(--hw-text-muted);
     }
 
+    /* ── rodapé ── */
     .hw-footer {
       margin-top: 1.5rem;
       text-align: right;
@@ -330,7 +282,7 @@
       color: var(--hw-text-muted);
     }
     .hw-footer a { color: inherit; text-decoration: none; }
-    .hw-footer a:hover { color: var(--hw-text-main); text-decoration: underline; }
+    .hw-footer a:hover { color: currentColor; text-decoration: underline; }
 
     /* ── responsivo ── */
     @media (max-width: 600px) {
@@ -339,7 +291,7 @@
     }
   `;
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  // ─── Helpers ──────────────────────────────────────────────────────────────────
 
   function esc(str) {
     return String(str ?? '')
@@ -347,13 +299,6 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
-  }
-
-  function getFaviconUrl(url) {
-    try {
-      const hostname = new URL(url).hostname;
-      return `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
-    } catch { return ''; }
   }
 
   function getDomain(url) {
@@ -370,7 +315,7 @@
     } catch { return dateStr; }
   }
 
-  // ─── Fetch ───────────────────────────────────────────────────────────────────
+  // ─── Fetch ────────────────────────────────────────────────────────────────────
 
   async function fetchData() {
     const headers = { Accept: 'application/vnd.github.v3+json' };
@@ -392,7 +337,7 @@
     return JSON.parse(decoded);
   }
 
-  // ─── Render ──────────────────────────────────────────────────────────────────
+  // ─── Render ───────────────────────────────────────────────────────────────────
 
   function render(root, raw) {
     const articles = Object.entries(raw)
@@ -404,33 +349,31 @@
       return;
     }
 
-    const allTags = [...new Set(articles.flatMap(a => a.tags || []))].sort();
+    let searchTerm = '';
 
-    let searchTerm  = '';
+    // ── Filtragem ──────────────────────────────────────────────────────────────
 
     function filtered() {
+      if (!searchTerm) return articles;
+      const q = searchTerm.toLowerCase();
       return articles.filter(a => {
-        if (searchTerm) {
-          const q = searchTerm.toLowerCase();
-          // Filtra por tag exata (clique na tag) ou busca textual livre
-          const tagMatch = (a.tags || []).some(tag => tag.toLowerCase() === q);
-          if (tagMatch) return true;
-          const inTitle = (a.title || '').toLowerCase().includes(q);
-          const inHl    = (a.highlights || []).some(h =>
-            (h.highlight || '').toLowerCase().includes(q) ||
-            (h.highlight_note || '').toLowerCase().includes(q)
-          );
-          return inTitle || inHl;
-        }
-        return true;
+        // Clique em tag: match exato na lista de tags do artigo
+        if ((a.tags || []).some(tag => tag.toLowerCase() === q)) return true;
+        // Busca livre: título, texto do highlight, nota
+        if ((a.title || '').toLowerCase().includes(q)) return true;
+        return (a.highlights || []).some(h =>
+          (h.highlight || '').toLowerCase().includes(q) ||
+          (h.highlight_note || '').toLowerCase().includes(q)
+        );
       });
     }
 
+    // ── HTML de um artigo ──────────────────────────────────────────────────────
+
     function articleHTML(a, idx) {
-      const favicon  = getFaviconUrl(a.url);
-      const domain   = getDomain(a.url);
-      const count    = (a.highlights || []).length;
-      const dateStr  = formatDate(a.date);
+      const domain  = getDomain(a.url);
+      const count   = (a.highlights || []).length;
+      const dateStr = formatDate(a.date);
 
       const tagsHTML = (a.tags || []).map(tag =>
         `<button class="hw-card-tag" data-tag="${esc(tag)}" type="button">${esc(tag)}</button>`
@@ -439,7 +382,7 @@
       const hlHTML = (a.highlights || []).map(h => {
         const hex = resolveColor(h.color);
         return `
-          <div class="hw-hl" style="--hw-hl-color: ${hex}">
+          <div class="hw-hl" style="--hw-hl-color:${hex}">
             <p class="hw-hl-text">${esc(h.highlight)}</p>
             ${h.highlight_note
               ? `<blockquote class="hw-hl-note">${esc(h.highlight_note)}</blockquote>`
@@ -448,7 +391,7 @@
       }).join('');
 
       const metaParts = [
-        domain ? `<span>${esc(domain)}</span>` : '',
+        domain  ? `<span>${esc(domain)}</span>`  : '',
         dateStr ? `<span>${esc(dateStr)}</span>` : '',
         tagsHTML ? `<div class="hw-card-tags">${tagsHTML}</div>` : '',
       ].filter(Boolean).join('');
@@ -456,15 +399,16 @@
       return `
         <article class="hw-card" data-idx="${idx}">
           <div class="hw-card-head">
-            <div class="hw-card-top">
-              <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer"
-                 onclick="event.stopPropagation()">
-                ${esc(a.title || a.url)}
-              </a>
-            </div>
+            <a class="hw-card-title"
+               href="${esc(a.url)}"
+               target="_blank"
+               rel="noopener noreferrer"
+               onclick="event.stopPropagation()">
+              ${esc(a.title || a.url)}
+            </a>
             ${metaParts ? `<div class="hw-card-meta">${metaParts}</div>` : ''}
             <div class="hw-card-foot">
-              <span>${count} nota${count !== 1 ? 's' : ''}</span>
+              <span>${t.notes(count)}</span>
               <span class="hw-expand-icon">▼</span>
             </div>
           </div>
@@ -473,10 +417,12 @@
               ? `<div class="hw-page-comment">${esc(a.page_comment)}</div>`
               : ''}
             <div class="hw-hl-list">${hlHTML}</div>
-            <button class="hw-hide-btn" data-idx="${idx}">fechar ↑</button>
+            <button class="hw-hide-btn" data-idx="${idx}">${t.close}</button>
           </div>
         </article>`;
     }
+
+    // ── Renderiza a lista ──────────────────────────────────────────────────────
 
     function refreshList() {
       const listEl = root.querySelector('.hw-list');
@@ -489,60 +435,51 @@
 
       listEl.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
 
-      // Toggle do card — clique no cabeçalho (exceto no link e nas tags)
+      // Clique no cabeçalho — expande/colapsa (exceto no título e nas tags)
       listEl.querySelectorAll('.hw-card-head').forEach(head => {
         head.addEventListener('click', e => {
           if (e.target.tagName === 'A') return;
           if (e.target.classList.contains('hw-card-tag')) return;
-          toggleCard(head.closest('.hw-card'));
+          const card = head.closest('.hw-card');
+          card.classList.toggle('open');
         });
       });
 
-      // Clique nas tags do card — escreve no campo de busca e filtra
+      // Clique numa tag — preenche busca e filtra; segundo clique limpa
       listEl.querySelectorAll('.hw-card-tag').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
-          const tag     = btn.dataset.tag;
+          const tag      = btn.dataset.tag;
           const searchEl = root.querySelector('.hw-search');
-          const isSame  = searchTerm === tag;
+          const isSame   = searchTerm === tag;
 
-          if (isSame) {
-            // Segunda vez: limpa o filtro
-            searchTerm = '';
-            if (searchEl) searchEl.value = '';
-          } else {
-            searchTerm = tag;
-            if (searchEl) searchEl.value = tag;
-          }
+          searchTerm = isSame ? '' : tag;
+          if (searchEl) searchEl.value = searchTerm;
 
-          // Atualiza estado visual de todas as tags visíveis
-          refreshCardTagStates();
           refreshList();
+          markActiveTags();
         });
       });
 
+      // Botão fechar
       listEl.querySelectorAll('.hw-hide-btn').forEach(btn => {
         btn.addEventListener('click', e => {
           e.stopPropagation();
-          closeCard(btn.closest('.hw-card'));
+          btn.closest('.hw-card').classList.remove('open');
         });
       });
+
+      markActiveTags();
     }
 
-    // Marca como active a tag que corresponde ao searchTerm atual
-    function refreshCardTagStates() {
+    // Marca visualmente a tag ativa em todos os cards visíveis
+    function markActiveTags() {
       root.querySelectorAll('.hw-card-tag').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tag === searchTerm);
       });
     }
 
-    function toggleCard(card) {
-      const isOpen = card.classList.contains('open');
-      isOpen ? closeCard(card) : openCard(card);
-    }
-
-    function openCard(card) { card.classList.add('open'); }
-    function closeCard(card) { card.classList.remove('open'); }
+    // ── Monta o HTML raiz ──────────────────────────────────────────────────────
 
     root.innerHTML = `
       <div class="hw-controls">
@@ -558,11 +495,10 @@
     root.querySelector('.hw-search').addEventListener('input', e => {
       searchTerm = e.target.value.trim();
       refreshList();
-      refreshCardTagStates();
     });
   }
 
-  // ─── Init ────────────────────────────────────────────────────────────────────
+  // ─── Init ─────────────────────────────────────────────────────────────────────
 
   function init() {
     const root = document.getElementById(cfg.target);
@@ -573,7 +509,7 @@
 
     if (!document.getElementById('eugrifo-widget-styles')) {
       const style = document.createElement('style');
-      style.id = 'eugrifo-widget-styles';
+      style.id    = 'eugrifo-widget-styles';
       style.textContent = CSS;
       document.head.appendChild(style);
     }
