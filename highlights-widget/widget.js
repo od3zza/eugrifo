@@ -122,56 +122,10 @@
     .hw-search::placeholder { color: var(--hw-text-muted); }
     .hw-search:focus { border-color: var(--hw-border-focus); }
 
-    .hw-tags-toggle {
-      font-family: inherit;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      background: transparent;
-      border: 1px solid var(--hw-border);
-      border-radius: var(--hw-radius-sm);
-      padding: 0.3rem 0.75rem;
-      cursor: pointer;
-      color: var(--hw-text-muted);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-    .hw-tags-toggle:hover { 
-      color: var(--hw-text-main); 
-      border-color: var(--hw-border-focus); 
-    }
-    .hw-tags-toggle.has-active {
-      font-weight: 700;
-      background: var(--hw-text-main);
-      color: var(--hw-bg-card); /* Usa a cor de fundo invertida */
-      border-color: var(--hw-text-main);
-    }
+    .hw-tags-bar { display: none; }   /* removido — tags agora ficam só nos cards */
+    .hw-tags-wrap { display: none; }  /* removido */
 
-    .hw-tags-wrap {
-      width: 100%;
-      margin-top: 0.5rem;
-      display: none;
-    }
-    .hw-tags-wrap.visible { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-    .hw-tag {
-      font-family: inherit;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      color: var(--hw-text-muted);
-      border: 1px solid var(--hw-border);
-      padding: 0.15rem 0.55rem;
-      border-radius: var(--hw-radius-sm);
-      cursor: pointer;
-      background: none;
-      transition: all 0.15s;
-    }
-    .hw-tag:hover, .hw-tag.active { 
-      background: var(--hw-text-main); 
-      color: var(--hw-bg-card);
-      border-color: var(--hw-text-main);
-    }
+    .hw-tag { display: none; }        /* removido — substituído por hw-card-tag clicável */
 
     /* ── lista ── */
     .hw-list { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -246,6 +200,20 @@
       border: 1px solid var(--hw-border);
       padding: 0.1rem 0.45rem;
       border-radius: var(--hw-radius-sm);
+      cursor: pointer;
+      background: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .hw-card-tag:hover {
+      background: var(--hw-text-main);
+      color: var(--hw-bg-card, #fff);
+      border-color: var(--hw-text-main);
+    }
+    .hw-card-tag.active {
+      background: var(--hw-text-main);
+      color: var(--hw-bg-card, #fff);
+      border-color: var(--hw-text-main);
+      font-weight: 700;
     }
 
     .hw-card-foot {
@@ -438,26 +406,21 @@
 
     const allTags = [...new Set(articles.flatMap(a => a.tags || []))].sort();
 
-    let activeTags  = new Set();
     let searchTerm  = '';
-    let tagsVisible = false;
 
     function filtered() {
       return articles.filter(a => {
-        if (activeTags.size > 0) {
-          const articleTags = new Set(a.tags || []);
-          for (const tag of activeTags) {
-            if (!articleTags.has(tag)) return false;
-          }
-        }
         if (searchTerm) {
           const q = searchTerm.toLowerCase();
+          // Filtra por tag exata (clique na tag) ou busca textual livre
+          const tagMatch = (a.tags || []).some(tag => tag.toLowerCase() === q);
+          if (tagMatch) return true;
           const inTitle = (a.title || '').toLowerCase().includes(q);
           const inHl    = (a.highlights || []).some(h =>
             (h.highlight || '').toLowerCase().includes(q) ||
             (h.highlight_note || '').toLowerCase().includes(q)
           );
-          if (!inTitle && !inHl) return false;
+          return inTitle || inHl;
         }
         return true;
       });
@@ -470,7 +433,7 @@
       const dateStr  = formatDate(a.date);
 
       const tagsHTML = (a.tags || []).map(tag =>
-        `<span class="hw-card-tag">${esc(tag)}</span>`
+        `<button class="hw-card-tag" data-tag="${esc(tag)}" type="button">${esc(tag)}</button>`
       ).join('');
 
       const hlHTML = (a.highlights || []).map(h => {
@@ -494,7 +457,6 @@
         <article class="hw-card" data-idx="${idx}">
           <div class="hw-card-head">
             <div class="hw-card-top">
-              ${favicon ? `<img class="hw-favicon" src="${esc(favicon)}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
               <a class="hw-card-title" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer"
                  onclick="event.stopPropagation()">
                 ${esc(a.title || a.url)}
@@ -527,10 +489,35 @@
 
       listEl.innerHTML = items.map((a, i) => articleHTML(a, i)).join('');
 
+      // Toggle do card — clique no cabeçalho (exceto no link e nas tags)
       listEl.querySelectorAll('.hw-card-head').forEach(head => {
         head.addEventListener('click', e => {
           if (e.target.tagName === 'A') return;
+          if (e.target.classList.contains('hw-card-tag')) return;
           toggleCard(head.closest('.hw-card'));
+        });
+      });
+
+      // Clique nas tags do card — escreve no campo de busca e filtra
+      listEl.querySelectorAll('.hw-card-tag').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const tag     = btn.dataset.tag;
+          const searchEl = root.querySelector('.hw-search');
+          const isSame  = searchTerm === tag;
+
+          if (isSame) {
+            // Segunda vez: limpa o filtro
+            searchTerm = '';
+            if (searchEl) searchEl.value = '';
+          } else {
+            searchTerm = tag;
+            if (searchEl) searchEl.value = tag;
+          }
+
+          // Atualiza estado visual de todas as tags visíveis
+          refreshCardTagStates();
+          refreshList();
         });
       });
 
@@ -542,6 +529,13 @@
       });
     }
 
+    // Marca como active a tag que corresponde ao searchTerm atual
+    function refreshCardTagStates() {
+      root.querySelectorAll('.hw-card-tag').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === searchTerm);
+      });
+    }
+
     function toggleCard(card) {
       const isOpen = card.classList.contains('open');
       isOpen ? closeCard(card) : openCard(card);
@@ -550,42 +544,9 @@
     function openCard(card) { card.classList.add('open'); }
     function closeCard(card) { card.classList.remove('open'); }
 
-    function refreshTagButtons() {
-      root.querySelectorAll('.hw-tag').forEach(btn => {
-        btn.classList.toggle('active', activeTags.has(btn.dataset.tag));
-      });
-
-      const toggleBtn = root.querySelector('.hw-tags-toggle');
-      if (!toggleBtn) return;
-
-      const count = activeTags.size;
-      if (count > 0) {
-        toggleBtn.textContent = `${t.clearTags} (${count}) ✕`;
-        toggleBtn.classList.add('has-active');
-      } else {
-        toggleBtn.textContent = tagsVisible ? t.hideTags : t.showTags;
-        toggleBtn.classList.remove('has-active');
-      }
-    }
-
-    function refreshTagsVisibility() {
-      const wrap = root.querySelector('.hw-tags-wrap');
-      if (wrap) wrap.classList.toggle('visible', tagsVisible);
-    }
-
-    const tagButtons = allTags.map(tag =>
-      `<button class="hw-tag" data-tag="${esc(tag)}">${esc(tag)}</button>`
-    ).join('');
-
     root.innerHTML = `
       <div class="hw-controls">
         <input class="hw-search" type="search" placeholder="${t.search}" autocomplete="off">
-        ${allTags.length ? `
-          <div class="hw-tags-bar">
-            <button class="hw-tags-toggle">${t.showTags}</button>
-          </div>
-          <div class="hw-tags-wrap">${tagButtons}</div>
-        ` : ''}
       </div>
       <div class="hw-list"></div>
       <div class="hw-footer">
@@ -596,40 +557,8 @@
 
     root.querySelector('.hw-search').addEventListener('input', e => {
       searchTerm = e.target.value.trim();
-      if (searchTerm && activeTags.size > 0) {
-        activeTags.clear();
-        refreshTagButtons();
-      }
       refreshList();
-    });
-
-    root.querySelector('.hw-tags-toggle')?.addEventListener('click', () => {
-      if (activeTags.size > 0) {
-        activeTags.clear();
-        tagsVisible = false;
-        refreshTagButtons();
-        refreshTagsVisibility();
-        refreshList();
-        return;
-      }
-      tagsVisible = !tagsVisible;
-      refreshTagButtons();
-      refreshTagsVisibility();
-    });
-
-    root.querySelectorAll('.hw-tag').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tag = btn.dataset.tag;
-        if (activeTags.has(tag)) {
-          activeTags.delete(tag);
-        } else {
-          activeTags.add(tag);
-          const searchEl = root.querySelector('.hw-search');
-          if (searchEl) { searchEl.value = ''; searchTerm = ''; }
-        }
-        refreshTagButtons();
-        refreshList();
-      });
+      refreshCardTagStates();
     });
   }
 
