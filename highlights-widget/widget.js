@@ -167,7 +167,7 @@
     .hw-card-tag:hover,
     .hw-card-tag.active {
       background: currentColor;
-      color: Canvas;
+ 
       border-color: currentColor;
       font-weight: 700;
     }
