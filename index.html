@@ -186,15 +186,19 @@
       <h2>Crie o banco de dados (Repositório)</h2>
     </div>
 
-    <p>O seu repositório no GitHub funcionará como banco de dados. Recomendamos deixá-lo <strong>Público</strong>, pois assim o widget não precisa de senhas para exibir os destaques no seu site.</p>
+    <p>O seu repositório no GitHub funcionará como banco de dados dos highlights. Ele deve ser <strong>Público</strong>, permitindo que o widget leia os dados diretamente sem necessidade de autenticação.</p>
 
     <ol class="steps">
       <li>Acesse o <strong>GitHub</strong> e clique em <strong>New repository</strong>.</li>
       <li>Dê um nome — ex: <code>meus-highlights</code>.</li>
-      <li>Escolha <strong>Public</strong> (Mais fácil) ou <strong>Private</strong> (Mais seguro, exige configuração extra no passo 6).</li>
+      <li>Escolha <strong>Public</strong>.</li>
       <li>Marque <strong>"Add a README file"</strong> (Obrigatório para iniciar o repositório).</li>
       <li>Clique em <strong>Create repository</strong>.</li>
     </ol>
+
+    <div class="callout tip">
+      <strong>Importante:</strong> seus highlights ficarão armazenados em um arquivo JSON público. Isso significa que qualquer pessoa poderá visualizá-los tanto pelo seu site quanto diretamente no GitHub.
+    </div>
   </section>
 
   <hr>
@@ -219,18 +223,32 @@
   <hr>
 
   <section>
-    <div class="step-label"><div class="step-num">3</div><h2>Instale a Extensão</h2></div>
+    <div class="step-label">
+      <div class="step-num">3</div>
+      <h2>Instale a Extensão</h2>
+    </div>
+
     <p>Abra <code>chrome://extensions</code>, ative o <strong>Modo do desenvolvedor</strong>, clique em <strong>Carregar sem compactação</strong> e selecione a pasta do eugrifo.</p>
   </section>
 
   <section>
-    <div class="step-label"><div class="step-num">4</div><h2>Configure a Extensão</h2></div>
+    <div class="step-label">
+      <div class="step-num">4</div>
+      <h2>Configure a Extensão</h2>
+    </div>
+
     <p>Clique no ícone ⚙️ da extensão. Na aba GitHub, cole o Token do <strong>Passo 2</strong>, seu nome de usuário e o nome do repositório (ex: <code>meus-highlights</code>).</p>
   </section>
 
   <section>
-    <div class="step-label"><div class="step-num">5</div><h2>Faça o primeiro Highlight</h2></div>
-    <p>Selecione qualquer texto na internet, clique no ícone da extensão e salve. O arquivo JSON será gerado magicamente no seu GitHub!</p>
+    <div class="step-label">
+      <div class="step-num">5</div>
+      <h2>Faça o primeiro Highlight</h2>
+    </div>
+
+    <p>Selecione qualquer texto na internet, clique no ícone da extensão e salve.</p>
+
+    <p>A extensão criará automaticamente um arquivo JSON dentro do seu repositório GitHub. Esse arquivo será utilizado como fonte de dados para exibir os highlights no seu site.</p>
   </section>
 
   <hr>
@@ -241,7 +259,9 @@
       <h2>Instale o Widget no seu Site</h2>
     </div>
 
-    <p>Copie o código abaixo e cole no HTML do seu site (WordPress, Vercel, Ghost, etc):</p>
+    <p>Agora basta conectar o widget ao seu repositório para exibir os highlights automaticamente.</p>
+
+    <p>Copie o código abaixo e cole no HTML do seu site (WordPress, Vercel, Ghost, Astro, Hugo ou qualquer outro):</p>
 
     <pre><code><span class="hl">&lt;div</span> <span class="at">id</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;&lt;/div&gt;</span>
 <span class="hl">&lt;script</span>
@@ -251,23 +271,19 @@
   <span class="at">data-target</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;
 &lt;/script&gt;</span></code></pre>
 
-    <div class="callout warn">
-      <strong>SEU REPOSITÓRIO É PRIVADO? LÉIA COM ATENÇÃO:</strong><br><br>
-      Se o seu repositório for privado, o script acima falhará. Você precisa adicionar uma linha extra: <code>data-token="seu_token"</code>. <br><br>
-      <strong>NUNCA use o token clássico (ghp_) do passo 2 aqui!</strong> Se você fizer isso, qualquer visitante do seu site poderá roubar o token e excluir seu GitHub. Você precisa criar um Token Granular, seguro para ficar exposto:
+    <div class="callout tip">
+      <strong>Como funciona?</strong><br><br>
+      O widget lê diretamente o arquivo JSON criado pela extensão no seu repositório GitHub e renderiza automaticamente os seus highlights no site.
     </div>
 
     <div class="note">
-      <div class="note-title">🔐 Como criar o Token Seguro (Fine-grained) para o Site</div>
-      <ol class="steps" style="margin-top: 10px;">
-        <li>Vá no GitHub em <strong>Developer settings → Personal access tokens → Fine-grained tokens</strong>.</li>
-        <li>Clique em <strong>Generate new token</strong>. Nomeie como <code>widget-site</code>.</li>
-        <li>Em <strong>Repository access</strong>, escolha <em>"Only select repositories"</em> e selecione o seu repositório <code>meus-highlights</code>.</li>
-        <li>Em <strong>Permissions</strong>, abra <em>"Repository permissions"</em>.</li>
-        <li>Desça até a opção <strong>Contents</strong> e mude para <strong>Access: Read-only</strong>. (Deixe todo o resto vazio).</li>
-        <li>Gere o token (ele começa com <code>github_pat_</code>). Copie e coloque no HTML do seu site: <code>data-token="github_pat_..."</code>.</li>
-      </ol>
-      <p style="font-size: 14px; margin-top: 10px; color: var(--muted);">Dessa forma, mesmo que um hacker copie esse token do seu site, a única coisa que ele conseguirá fazer é ler os seus destaques — o que já é público de qualquer maneira.</p>
+      <div class="note-title">📖 Sobre a visibilidade dos highlights</div>
+
+      <p>O EuGrifo utiliza um arquivo JSON público como fonte de dados.</p>
+
+      <p>Na prática, qualquer pessoa que consiga visualizar seus highlights no site também poderá visualizar exatamente o mesmo conteúdo diretamente no GitHub.</p>
+
+      <p>Isso simplifica a instalação, elimina a necessidade de servidores e permite que você mantenha controle total sobre seus próprios dados.</p>
     </div>
   </section>
 
@@ -277,6 +293,8 @@
   <span>✦ eugrifo (v5.1)</span>
   <a href="https://oieuoshi.vercel.app/blog/misc/porque-eu-fiz-uma-extensao-pra-salvar-textos-destacados" target="_blank">baseado no projeto de uoshi</a>
 </footer>
+
+</body>
 
 </body>
 </html>
