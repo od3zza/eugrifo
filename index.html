@@ -4,23 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Título -->
   <title>EuGrifo (v5.1) — Guia de Instalação</title>
 
-  <!-- SEO -->
   <meta name="description" content="Configure o EuGrifo para salvar highlights da web no GitHub e exibi-los em seu site pessoal.">
   <meta name="keywords" content="highlights, web clipping, anotações, github, extensão chrome, digital garden, eugrifo">
   <meta name="author" content="od3zza">
   <meta name="robots" content="index, follow">
 
-  <!-- URL Canônica -->
   <link rel="canonical" href="https://eugrifo.netlify.app/">
 
-  <!-- Tema -->
   <meta name="theme-color" content="#161616">
   <meta name="color-scheme" content="dark">
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:site_name" content="EuGrifo">
@@ -29,30 +24,25 @@
   <meta property="og:url" content="https://eugrifo.netlify.app/">
   <meta property="og:image" content="https://eugrifo.netlify.app/og-image.png">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="EuGrifo — Guia de Instalação">
   <meta name="twitter:description" content="Colete highlights da web e publique-os em seu próprio site.">
   <meta name="twitter:image" content="https://eugrifo.netlify.app/og-image.png">
 
-  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Pré-conexão Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- Fontes -->
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
-  </style>
-
-  <!-- CSS -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
 
     :root {
       --ink:     #eddfd8;
@@ -65,7 +55,9 @@
       --code-fg: #eddfd8;
     }
 
-    html { scroll-behavior: smooth; }
+    html { 
+      scroll-behavior: smooth; 
+    }
 
     body {
       font-family: 'EB Garamond', Georgia, serif;
@@ -83,6 +75,7 @@
       border-bottom: 1px solid var(--border);
       margin-bottom: 56px;
     }
+
     .badge {
       display: inline-block;
       font-family: 'JetBrains Mono', monospace;
@@ -95,6 +88,7 @@
       border-radius: 2px;
       margin-bottom: 20px;
     }
+
     h1 {
       font-size: 42px;
       font-weight: 400;
@@ -102,77 +96,220 @@
       letter-spacing: -.01em;
       margin-bottom: 16px;
     }
-    h1 em { font-style: italic; color: var(--muted); }
-    .lead { font-size: 17px; color: var(--muted); max-width: 540px; }
-    .content { max-width: 680px; margin: 0 auto; }
-    section { margin-bottom: 56px; }
 
-    .step-label { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-    .step-num {
-      flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
-      background: var(--ink); color: var(--paper);
-      font-family: 'JetBrains Mono', monospace; font-size: 13px;
-      display: flex; align-items: center; justify-content: center;
+    h1 em { 
+      font-style: italic; 
+      color: var(--muted); 
     }
-    h2 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
-    p { margin-bottom: 14px; }
-    p:last-child { margin-bottom: 0; }
+
+    .lead { 
+      font-size: 17px; 
+      color: var(--muted); 
+      max-width: 540px; 
+    }
+
+    .content { 
+      max-width: 680px; 
+      margin: 0 auto; 
+    }
+
+    section { 
+      margin-bottom: 56px; 
+    }
+
+    .step-label { 
+      display: flex; 
+      align-items: center; 
+      gap: 14px; 
+      margin-bottom: 20px; 
+    }
+
+    .step-num {
+      flex-shrink: 0; 
+      width: 36px; 
+      height: 36px; 
+      border-radius: 50%;
+      background: var(--ink); 
+      color: var(--paper);
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 13px;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+    }
+
+    h2 { 
+      font-size: 22px; 
+      font-weight: 600; 
+      letter-spacing: -.01em; 
+    }
+
+    p { 
+      margin-bottom: 14px; 
+    }
+
+    p:last-child { 
+      margin-bottom: 0; 
+    }
 
     .callout {
-      background: var(--surface); border-left: 3px solid var(--accent);
-      padding: 16px 20px; border-radius: 0 6px 6px 0; font-size: 16px; margin: 20px 0;
+      background: var(--surface); 
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px; 
+      border-radius: 0 6px 6px 0; 
+      font-size: 16px; 
+      margin: 20px 0;
     }
-    .callout strong { font-weight: 600; }
-    .callout.warn { border-left-color: #e73e18; }
-    .callout.tip  { border-left-color: #eddfd8; }
+
+    .callout strong { 
+      font-weight: 600; 
+    }
+
+    .callout.warn { 
+      border-left-color: #e73e18; 
+    }
+
+    .callout.tip { 
+      border-left-color: #eddfd8; 
+    }
 
     pre {
-      background: var(--code-bg); border-radius: 8px;
-      padding: 20px 22px; overflow-x: auto; margin: 16px 0;
+      background: var(--code-bg); 
+      border-radius: 8px;
+      padding: 20px 22px; 
+      overflow-x: auto; 
+      margin: 16px 0;
     }
-    code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.65; color: var(--code-fg); }
-    p code, li code { background: var(--surface); color: var(--ink); padding: 1px 6px; border-radius: 3px; font-size: 14px; }
-    .cm { color: #555; } .hl { color: #e73e18; } .at { color: #eddfd8; } .st { color: #c8a898; }
 
-    .file-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    code { 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 13px; 
+      line-height: 1.65; 
+      color: var(--code-fg); 
+    }
+
+    p code, li code { 
+      background: var(--surface); 
+      color: var(--ink); 
+      padding: 1px 6px; 
+      border-radius: 3px; 
+      font-size: 14px; 
+    }
+
+    /* Cores de syntax highlight */
+    .cm { color: #555; } 
+    .hl { color: #e73e18; } 
+    .at { color: #eddfd8; } 
+    .st { color: #c8a898; }
+
+    .file-list { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 10px; 
+      margin: 20px 0; 
+    }
+
     .file-item {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 7px; padding: 12px 14px;
-      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+      background: var(--surface); 
+      border: 1px solid var(--border);
+      border-radius: 7px; 
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 13px;
     }
-    .file-icon { font-size: 16px; }
 
-    ol.steps { list-style: none; counter-reset: step; }
-    ol.steps li { counter-increment: step; padding: 0 0 18px 0; position: relative; }
+    .file-icon { 
+      font-size: 16px; 
+    }
+
+    ol.steps { 
+      list-style: none; 
+      counter-reset: step; 
+    }
+
+    ol.steps li { 
+      counter-increment: step; 
+      padding: 0 0 18px 0; 
+      position: relative; 
+    }
+
     ol.steps li::before {
-      content: counter(step) "."; font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; color: var(--accent); margin-right: 8px; font-weight: 500;
+      content: counter(step) "."; 
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; 
+      color: var(--accent); 
+      margin-right: 8px; 
+      font-weight: 500;
     }
-    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
-    .checklist { list-style: none; }
-    .checklist li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 16px; }
-    .checklist li:last-child { border-bottom: none; }
-    .check { color: var(--accent); font-weight: 700; }
+    hr { 
+      border: none; 
+      border-top: 1px solid var(--border); 
+      margin: 48px 0; 
+    }
+
+    .checklist { 
+      list-style: none; 
+    }
+
+    .checklist li { 
+      display: flex; 
+      gap: 10px; 
+      padding: 8px 0; 
+      border-bottom: 1px solid var(--border); 
+      font-size: 16px; 
+    }
+
+    .checklist li:last-child { 
+      border-bottom: none; 
+    }
+
+    .check { 
+      color: var(--accent); 
+      font-weight: 700; 
+    }
 
     .note {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 20px 22px; margin: 20px 0; font-size: 16px;
+      background: var(--surface); 
+      border: 1px solid var(--border);
+      border-radius: 8px; 
+      padding: 20px 22px; 
+      margin: 20px 0; 
+      font-size: 16px;
     }
+
     .note-title {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;
-      letter-spacing: .1em; color: var(--muted); margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 11px; 
+      text-transform: uppercase;
+      letter-spacing: .1em; 
+      color: var(--muted); 
+      margin-bottom: 8px;
     }
 
     footer {
-      max-width: 680px; margin: 0 auto; padding-top: 40px; border-top: 1px solid var(--border);
-      font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; align-items: center;
+      max-width: 680px; 
+      margin: 0 auto; 
+      padding-top: 40px; 
+      border-top: 1px solid var(--border);
+      font-size: 14px; 
+      color: var(--muted); 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
     }
-    footer a { color: var(--muted); text-decoration: underline; }
+
+    footer a { 
+      color: var(--muted); 
+      text-decoration: underline; 
+    }
   </style>
 </head>
-<body>
+
+  <body>
 
 <header>
   <div class="badge">✦ guia de instalação</div>
@@ -180,7 +317,7 @@
   <p class="lead">Configure sua extensão de destaques pessoal e exiba-os em qualquer site — sem servidor, sem backend.</p>
 </header>
 
-<div class="content">
+<main class="content">
 
   <section>
     <div class="step-label">
@@ -280,7 +417,6 @@
 
     <div class="note">
       <div class="note-title">⚠️ Sobre a visibilidade dos highlights</div>
-
       <p>O EuGrifo utiliza um arquivo JSON público como fonte de dados.</p>
       <p>Na prática, qualquer pessoa que consiga visualizar seus highlights no site também poderá visualizar exatamente o mesmo conteúdo diretamente no GitHub.</p>
       <p>Isso simplifica a instalação, elimina a necessidade de servidores e permite que você mantenha controle total sobre seus próprios dados.</p>
@@ -288,15 +424,12 @@
 
     <div class="note">
       <div class="note-title">⚠️ Sobre o estilo visual dos highlights</div>
-
       <p>O widget instalado no seu site possui um estilo visual básico pré-definido.</p>
-
       <p>Porém, ele irá assumir características específicas — como cores, tipografias, botões — do estilo visual do seu site.</p>
     </div>
 
      <div class="note">
       <div class="note-title">⚠️ Sobre atualizações</div>
-
       <p>Eventualmente atualizações serão feitas para melhorar o widget e também a extensão.</p>
       <p>As atualização do widget ficará visível na página onde você hospedar os destaques em seu site.</p>
       <p>As atualizações da extensão serão notificadas na extensão e poderão ser conferidas e aplicadas em Configurações > Aparência > Tema da Extensão.</p>  
@@ -304,7 +437,7 @@
     </div>
   </section>
 
-</div>
+</main>
 
 <footer>
   <span>✦ eugrifo (v5.1)</span>
