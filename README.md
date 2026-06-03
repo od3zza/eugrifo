@@ -1,4 +1,4 @@
-# EuGrifo
+# ✍️ EuGrifo
 
 EuGrifo é uma extensão para navegador que permite coletar, organizar e revisitar highlights da web em uma página pessoal.
 
@@ -6,18 +6,18 @@ Salve trechos de artigos, pesquisas, referências, documentações ou qualquer c
 
 A extensão nasceu da vontade de manter uma coleção própria de highlights sem depender de serviços pagos ou plataformas fechadas. Por isso, todo o conteúdo que você salva pertence a você: armazenamento, edição e backups ficam totalmente sob seu controle.
 
-Em vez de espalhar anotações por diferentes aplicativos, o EuGrifo oferece uma forma simples de construir sua própria biblioteca de ideias, referências e aprendizados ao longo do tempo.
+🌱 Em vez de espalhar anotações por diferentes aplicativos, o EuGrifo oferece uma forma simples de construir sua própria biblioteca de ideias, referências e aprendizados ao longo do tempo.
 
-## Instalação
+## 🚀 Instalação
 
 1. Instale a extensão no navegador.
 2. Abra qualquer página da web.
 3. Clique no ícone da extensão.
 4. Faça a configuração inicial.
 
-## Como usar
+## 📖 Como usar
 
-### Salvar uma página
+### ✨ Salvar um highlight
 
 1. Acesse a página que deseja na web.
 2. Selecione o trecho do texto que quer guardar.
@@ -25,9 +25,9 @@ Em vez de espalhar anotações por diferentes aplicativos, o EuGrifo oferece uma
 4. Pressione **Salvar Highlight**.
 5. Adicione tags ou observações (opcional).
 
-Pronto. O conteúdo será adicionado à sua biblioteca.
+✅ Pronto. O conteúdo será adicionado à sua biblioteca.
 
-### Organizar conteúdo
+### 🏷️ Organizar conteúdo
 
 Utilize tags para agrupar páginas por tema:
 
@@ -37,7 +37,7 @@ Utilize tags para agrupar páginas por tema:
 * arte digital
 * inspiração
 
-### Encontrar conteúdo novamente
+### 🔍 Encontrar conteúdo novamente
 
 Abra sua biblioteca e pesquise por:
 
@@ -46,23 +46,23 @@ Abra sua biblioteca e pesquise por:
 * tags
 * observações
 
-## Fluxo básico
+## 🔄 Fluxo básico
 
 ```text
-Encontrou algo interessante
-            ↓
-        Selecione
-            ↓
-      Clique na extensão
-            ↓
-        Salvar página
-            ↓
-     Adicionar tags (opcional)
-            ↓
-      Consultar depois
+💡 Encontrou algo interessante
+              ↓
+📌 Selecione o trecho
+              ↓
+🖱️ Clique na extensão
+              ↓
+💾 Salvar highlight
+              ↓
+🏷️ Adicionar tags (opcional)
+              ↓
+📚 Consultar depois
 ```
 
-## Casos de uso
+## 💡 Casos de uso
 
 * Guardar artigos para ler mais tarde
 * Criar uma biblioteca de referências
@@ -70,14 +70,15 @@ Encontrou algo interessante
 * Salvar inspirações para projetos
 * Construir um arquivo pessoal de conhecimento
 
-## Dicas
+## 🛠️ Dicas
 
 * Use tags consistentes.
 * Salve páginas assim que encontrá-las.
 * Organize conteúdos por tema.
 * Adicione observações para facilitar buscas futuras.
 
-## Status
+## 🧪 Status
 
-Este é um projeto experimental em desenvolvimento:
-Log #1 (v5.0) — Publicação da extensão \(\alpha \) para refinamento.
+Este é um projeto experimental em desenvolvimento.
+
+**Log #1 (v5.0)** — Publicação da extensão α para refinamento.
