@@ -166,8 +166,7 @@
     }
     .hw-card-tag:hover,
     .hw-card-tag.active {
-      background: currentColor;
- 
+      border: 2px;
       border-color: currentColor;
       font-weight: 700;
     }
