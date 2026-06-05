@@ -2,7 +2,7 @@
   "_comment": "Este arquivo controla toda a aparência da extensão eugrifo.",
   "_comment2": "Ao salvar uma nova versão aqui, todos os usuários com a extensão instalada recebem uma notificação no popup para aplicar as mudanças — sem reinstalar.",
 
-  "version": "0.1",
+  "version": "1.0.3",
   "changelog": "Versão inicial com paleta escura e laranja.",
 
   "colors": {
