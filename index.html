@@ -4,45 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>EuGrifo (v1.0.3) — Guia de Instalação</title>
+  <title>EuGrifo — Guia de Instalação</title>
 
   <meta name="description" content="Configure o EuGrifo para salvar highlights da web no GitHub e exibi-los em seu site pessoal.">
   <meta name="keywords" content="highlights, web clipping, anotações, github, extensão chrome, digital garden, eugrifo">
   <meta name="author" content="od3zza">
   <meta name="robots" content="index, follow">
 
-  <link rel="canonical" href="https://eugrifo.netlify.app/">
-
   <meta name="theme-color" content="#161616">
   <meta name="color-scheme" content="dark">
-
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="pt_BR">
-  <meta property="og:site_name" content="EuGrifo">
-  <meta property="og:title" content="EuGrifo — Guia de Instalação">
-  <meta property="og:description" content="Configure sua extensão de highlights pessoal e exiba seus destaques em qualquer site.">
-  <meta property="og:url" content="https://eugrifo.netlify.app/">
-  <meta property="og:image" content="https://eugrifo.netlify.app/og-image.png">
-
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="EuGrifo — Guia de Instalação">
-  <meta name="twitter:description" content="Colete highlights da web e publique-os em seu próprio site.">
-  <meta name="twitter:image" content="https://eugrifo.netlify.app/og-image.png">
-
-  <link rel="icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    *, *::before, *::after { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --ink:     #eddfd8;
@@ -55,266 +30,63 @@
       --code-fg: #eddfd8;
     }
 
-    html { 
-      scroll-behavior: smooth; 
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 18px;
-      line-height: 1.75;
+      line-height: 1.6;
       color: var(--ink);
       background: var(--paper);
       padding: 0 24px 80px;
     }
 
-    header {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 64px 0 48px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 56px;
-    }
+    header { max-width: 680px; margin: 0 auto; padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 56px; }
+    .badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 3px 10px; border-radius: 2px; margin-bottom: 20px; }
+    h1 { font-size: 42px; font-weight: 400; line-height: 1.15; letter-spacing: -.01em; margin-bottom: 16px; }
+    h1 em { font-style: italic; color: var(--muted); }
+    .lead { font-size: 17px; color: var(--muted); max-width: 540px; }
 
-    .badge {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 3px 10px;
-      border-radius: 2px;
-      margin-bottom: 20px;
-    }
+    .content { max-width: 680px; margin: 0 auto; }
+    section { margin-bottom: 56px; }
 
-    h1 {
-      font-size: 42px;
-      font-weight: 400;
-      line-height: 1.15;
-      letter-spacing: -.01em;
-      margin-bottom: 16px;
-    }
+    .step-label { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .step-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: 'JetBrains Mono', monospace; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    h2 { font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+    p { margin-bottom: 14px; color: var(--muted); }
 
-    h1 em { 
-      font-style: italic; 
-      color: var(--muted); 
-    }
+    .callout { background: var(--surface); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 6px 6px 0; font-size: 15px; margin: 16px 0; color: var(--ink); }
+    .callout strong { font-weight: 600; }
 
-    .lead { 
-      font-size: 17px; 
-      color: var(--muted); 
-      max-width: 540px; 
-    }
+    pre { background: var(--code-bg); border-radius: 8px; padding: 16px 20px; overflow-x: auto; margin: 16px 0; border: 1px solid var(--border); }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.65; color: var(--code-fg); }
+    p code, li code { background: var(--surface); color: var(--ink); padding: 2px 6px; border-radius: 4px; font-size: 14px; border: 1px solid var(--border); }
+    .hl { color: #e73e18; } .at { color: #eddfd8; } .st { color: #c8a898; }
 
-    .content { 
-      max-width: 680px; 
-      margin: 0 auto; 
-    }
+    ol.steps { list-style: none; counter-reset: step; }
+    ol.steps li { counter-increment: step; padding: 0 0 12px 0; position: relative; color: var(--ink); font-size: 17px; }
+    ol.steps li::before { content: counter(step) "."; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); margin-right: 8px; font-weight: 500; }
 
-    section { 
-      margin-bottom: 56px; 
-    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
-    .step-label { 
-      display: flex; 
-      align-items: center; 
-      gap: 14px; 
-      margin-bottom: 20px; 
-    }
+    /* ── Sanfonas (FAQ / Avisos) ── */
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; transition: all 0.2s; }
+    summary { padding: 16px 20px; cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; display: flex; align-items: center; justify-content: space-between; font-size: 16px; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 18px; transition: transform 0.2s; }
+    details[open] summary::after { content: '−'; transform: rotate(180deg); }
+    details p { padding: 0 20px 20px 20px; color: var(--muted); font-size: 15px; margin: 0; }
 
-    .step-num {
-      flex-shrink: 0; 
-      width: 36px; 
-      height: 36px; 
-      border-radius: 50%;
-      background: var(--ink); 
-      color: var(--paper);
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 13px;
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-    }
-
-    h2 { 
-      font-size: 22px; 
-      font-weight: 600; 
-      letter-spacing: -.01em; 
-    }
-
-    p { 
-      margin-bottom: 14px; 
-    }
-
-    p:last-child { 
-      margin-bottom: 0; 
-    }
-
-    .callout {
-      background: var(--surface); 
-      border-left: 3px solid var(--accent);
-      padding: 16px 20px; 
-      border-radius: 0 6px 6px 0; 
-      font-size: 16px; 
-      margin: 20px 0;
-    }
-
-    .callout strong { 
-      font-weight: 600; 
-    }
-
-    .callout.warn { 
-      border-left-color: #e73e18; 
-    }
-
-    .callout.tip { 
-      border-left-color: #eddfd8; 
-    }
-
-    pre {
-      background: var(--code-bg); 
-      border-radius: 8px;
-      padding: 20px 22px; 
-      overflow-x: auto; 
-      margin: 16px 0;
-    }
-
-    code { 
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 13px; 
-      line-height: 1.65; 
-      color: var(--code-fg); 
-    }
-
-    p code, li code { 
-      background: var(--surface); 
-      color: var(--ink); 
-      padding: 1px 6px; 
-      border-radius: 3px; 
-      font-size: 14px; 
-    }
-
-    /* Cores de syntax highlight */
-    .cm { color: #555; } 
-    .hl { color: #e73e18; } 
-    .at { color: #eddfd8; } 
-    .st { color: #c8a898; }
-
-    .file-list { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 10px; 
-      margin: 20px 0; 
-    }
-
-    .file-item {
-      display: flex; 
-      align-items: center; 
-      gap: 10px;
-      background: var(--surface); 
-      border: 1px solid var(--border);
-      border-radius: 7px; 
-      padding: 12px 14px;
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 13px;
-    }
-
-    .file-icon { 
-      font-size: 16px; 
-    }
-
-    ol.steps { 
-      list-style: none; 
-      counter-reset: step; 
-    }
-
-    ol.steps li { 
-      counter-increment: step; 
-      padding: 0 0 18px 0; 
-      position: relative; 
-    }
-
-    ol.steps li::before {
-      content: counter(step) "."; 
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; 
-      color: var(--accent); 
-      margin-right: 8px; 
-      font-weight: 500;
-    }
-
-    hr { 
-      border: none; 
-      border-top: 1px solid var(--border); 
-      margin: 48px 0; 
-    }
-
-    .checklist { 
-      list-style: none; 
-    }
-
-    .checklist li { 
-      display: flex; 
-      gap: 10px; 
-      padding: 8px 0; 
-      border-bottom: 1px solid var(--border); 
-      font-size: 16px; 
-    }
-
-    .checklist li:last-child { 
-      border-bottom: none; 
-    }
-
-    .check { 
-      color: var(--accent); 
-      font-weight: 700; 
-    }
-
-    .note {
-      background: var(--surface); 
-      border: 1px solid var(--border);
-      border-radius: 8px; 
-      padding: 20px 22px; 
-      margin: 20px 0; 
-      font-size: 16px;
-    }
-
-    .note-title {
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 11px; 
-      text-transform: uppercase;
-      letter-spacing: .1em; 
-      color: var(--muted); 
-      margin-bottom: 8px;
-    }
-
-    footer {
-      max-width: 680px; 
-      margin: 0 auto; 
-      padding-top: 40px; 
-      border-top: 1px solid var(--border);
-      font-size: 14px; 
-      color: var(--muted); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center;
-    }
-
-    footer a { 
-      color: var(--muted); 
-      text-decoration: underline; 
-    }
+    footer { max-width: 680px; margin: 0 auto; padding-top: 30px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+    footer a { color: var(--muted); text-decoration: underline; }
   </style>
 </head>
-
-  <body>
+<body>
 
 <header>
-  <div class="badge">✦ guia de instalação</div>
-  <h1>eugrifo (v1.0.3)<br><em>passo a passo</em></h1>
-  <p class="lead">Configure sua extensão de destaques pessoal e exiba-os em qualquer site — sem servidor, sem backend.</p>
+  <div class="badge">✦ Instalação Rápida</div>
+  <h1>eugrifo<br><em>em 6 passos</em></h1>
+  <p class="lead">Crie seu próprio banco de dados de leitura no GitHub e exiba seus grifos no seu site. Sem custos, sem servidores.</p>
 </header>
 
 <main class="content">
@@ -322,50 +94,36 @@
   <section>
     <div class="step-label">
       <div class="step-num">1</div>
-      <h2>Crie o banco de dados (Repositório)</h2>
+      <h2>O Banco de Dados (Repositório)</h2>
     </div>
-
-    <p>O seu repositório no GitHub funcionará como banco de dados dos highlights. Ele deve ser <strong>Público</strong>, permitindo que o widget leia os dados diretamente sem necessidade de autenticação.</p>
-
+    <p>Seu repositório no GitHub funcionará como o seu banco de dados. Ele deve ser <strong>Público</strong> para que o widget consiga ler os grifos no seu site.</p>
     <ol class="steps">
       <li>Acesse o <strong>GitHub</strong> e clique em <strong>New repository</strong>.</li>
-      <li>Dê um nome — ex: <code>meus-highlights</code>.</li>
-      <li>Escolha <strong>Public</strong>.</li>
-      <li>Marque <strong>"Add a README file"</strong> (Obrigatório para iniciar o repositório).</li>
+      <li>Nomeie como <code>meus-highlights</code> (ou outro nome de sua escolha).</li>
+      <li>Marque a opção <strong>Public</strong>.</li>
+      <li>Marque <strong>"Add a README file"</strong> (obrigatório para iniciar).</li>
       <li>Clique em <strong>Create repository</strong>.</li>
     </ol>
-
-    <div class="callout tip">
-      <strong>Importante:</strong> seus highlights ficarão armazenados em um arquivo JSON público. Isso significa que qualquer pessoa poderá visualizá-los tanto pelo seu site quanto diretamente no GitHub.
-    </div>
   </section>
 
   <hr>
 
-<section>
+  <section>
     <div class="step-label">
       <div class="step-num">2</div>
-      <h2>Gere o Token Mestre (Para a Extensão)</h2>
+      <h2>A Chave de Acesso (Token)</h2>
     </div>
-
-    <p>A extensão precisa de permissão para <strong>escrever</strong> os destaques no seu GitHub. Para garantir segurança total, vamos gerar um Token Granular (Fine-grained). Ele terá acesso <strong>exclusivo</strong> apenas ao repositório que acabamos de criar, mantendo todos os seus outros projetos 100% seguros.</p>
-
+    <p>A extensão precisa de uma chave de segurança para salvar os textos na sua conta. Vamos gerar um token que tem acesso <em>exclusivo</em> apenas ao repositório que você acabou de criar.</p>
     <ol class="steps">
-      <li>No GitHub, clique na sua foto de perfil (no canto superior direito) e vá em <strong>Settings</strong>.</li>
-      <li>No menu lateral esquerdo, desça até o final e clique em <strong>Developer settings</strong>.</li>
-      <li>No menu da esquerda, abra <strong>Personal access tokens</strong> e clique em <strong>Fine-grained tokens</strong>.</li>
-      <li>Clique no botão <strong>Generate new token</strong> (pode ser necessário confirmar sua senha).</li>
-      <li><strong>Token name:</strong> Digite <code>eugrifo-extensao</code>.</li>
-      <li><strong>Expiration:</strong> O GitHub permite no máximo 1 ano (selecione o prazo máximo. Você precisará renovar anualmente por questões de segurança do próprio GitHub).</li>
-      <li>Desça até a seção <strong>Repository access</strong>, escolha <em>"Only select repositories"</em> e selecione o repositório que você acabou de criar (ex: <code>meus-highlights</code>).</li>
-      <li>Logo abaixo, expanda a seção <strong>Permissions</strong> e clique em <strong>Repository permissions</strong>.</li>
-      <li>Você verá uma lista enorme. Ignore todas as outras opções e procure apenas por <strong>Contents</strong>. Mude o acesso dela para <strong>Read and write</strong>. <br><em>(Nota: a opção "Metadata" mudará automaticamente para Read-only, isso é normal)</em>.</li>
-      <li>Desça até o final da página e clique no botão verde <strong>Generate token</strong>.</li>
-      <li><strong>Copie o código gerado agora!</strong> Ele começa com <code>github_pat_</code>. (Se você fechar a página, não conseguirá copiar novamente).</li>
+      <li>No GitHub, vá em <strong>Settings</strong> > <strong>Developer settings</strong>.</li>
+      <li>Acesse <strong>Personal access tokens</strong> > <strong>Fine-grained tokens</strong> e clique em <strong>Generate new token</strong>.</li>
+      <li>Em Nome, digite <code>eugrifo-extensao</code>. Na Validade, escolha <strong>1 ano</strong> (o máximo permitido).</li>
+      <li>Em <strong>Repository access</strong>, escolha <em>"Only select repositories"</em> e selecione o repositório <code>meus-highlights</code>.</li>
+      <li>Abra <strong>Repository permissions</strong>, procure por <strong>Contents</strong> e mude para <strong>Read and write</strong>.</li>
+      <li>Desça a página, clique em Generate e <strong>copie o código</strong> (ele começa com <code>github_pat_</code>).</li>
     </ol>
-    
     <div class="callout tip">
-      <strong>Por que isso é seguro?</strong> Mesmo se um hacker invadisse o seu computador e roubasse esse token, a única coisa que ele conseguiria fazer seria ler ou apagar os seus textos grifados. Todo o resto da sua conta, códigos de trabalho e outros repositórios privados permanecem blindados e inacessíveis.
+      Guarde esse token! Você vai colá-lo dentro das configurações da extensão no Passo 4.
     </div>
   </section>
 
@@ -376,32 +134,28 @@
       <div class="step-num">3</div>
       <h2>Instale a Extensão</h2>
     </div>
-
-
-    <p>Acesse a seção de <a href="https://github.com/od3zza/eugrifo/releases">Releases</a> do eugrifo no GitHub e faça o download da versão
-      mais recente (arquivo em formato .zip). Descompacte em uma pasta no seu dispositivo.</p>
-    <p>Abra <code>chrome://extensions</code>, ative o <strong>Modo do desenvolvedor</strong>, clique em <strong>Carregar sem compactação</strong>
-      e selecione a pasta do eugrifo.</p>
+    <ol class="steps">
+      <li>Baixe o arquivo <code>.zip</code> na página de <a href="https://github.com/od3zza/eugrifo/releases" target="_blank" style="color:var(--accent)">Releases do GitHub</a> e extraia a pasta no seu computador.</li>
+      <li>Abra o Chrome e acesse <code>chrome://extensions</code>.</li>
+      <li>Ative o <strong>Modo do desenvolvedor</strong> (no canto superior direito).</li>
+      <li>Clique em <strong>Carregar sem compactação</strong> e selecione a pasta extraída.</li>
+    </ol>
   </section>
 
   <section>
     <div class="step-label">
       <div class="step-num">4</div>
-      <h2>Configure a Extensão</h2>
+      <h2>Conecte tudo</h2>
     </div>
-
-    <p>Clique no ícone ⚙️ da extensão. Na aba GitHub, cole o Token do <strong>Passo 2</strong>, seu nome de usuário e o nome do repositório (ex: <code>meus-highlights</code>).</p>
+    <p>Clique no ícone ⚙️ da extensão (no canto superior do navegador). Na aba "GitHub", cole o <strong>Token</strong> do Passo 2, seu <strong>Nome de Usuário</strong> e o <strong>Nome do Repositório</strong>. Salve e teste a conexão.</p>
   </section>
 
   <section>
     <div class="step-label">
       <div class="step-num">5</div>
-      <h2>Faça o primeiro Highlight</h2>
+      <h2>Faça seu primeiro Grifo</h2>
     </div>
-
-    <p>Selecione qualquer texto na internet, clique no ícone da extensão e salve.</p>
-
-    <p>A extensão criará automaticamente um arquivo JSON dentro do seu repositório GitHub. Esse arquivo será utilizado como fonte de dados para exibir os highlights no seu site.</p>
+    <p>Selecione qualquer texto na internet, clique no ícone da extensão e salve! O arquivo que guarda seus dados será criado automaticamente lá no seu GitHub.</p>
   </section>
 
   <hr>
@@ -409,13 +163,9 @@
   <section>
     <div class="step-label">
       <div class="step-num">6</div>
-      <h2>Instale o Widget no seu Site</h2>
+      <h2>O Widget no seu Site (Opcional)</h2>
     </div>
-
-    <p>Agora basta conectar o widget ao seu repositório para exibir os highlights automaticamente.</p>
-
-    <p>Copie o código abaixo e cole no HTML do seu site (WordPress, Vercel, Ghost, Astro, Hugo ou qualquer outro):</p>
-
+    <p>Quer exibir seus grifos no seu blog, portfólio ou site? Copie o código abaixo e cole no seu HTML (WordPress, Astro, Ghost, Vercel, etc):</p>
     <pre><code><span class="hl">&lt;div</span> <span class="at">id</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;&lt;/div&gt;</span>
 <span class="hl">&lt;script</span>
   <span class="at">src</span>=<span class="st">"https://cdn.jsdelivr.net/gh/od3zza/eugrifo@main/highlights-widget/widget.js"</span>
@@ -423,32 +173,26 @@
   <span class="at">data-repo</span>=<span class="st">"meus-highlights"</span>
   <span class="at">data-target</span>=<span class="st">"meus-grifos"</span><span class="hl">&gt;
 &lt;/script&gt;</span></code></pre>
+  </section>
 
-    <div class="callout tip">
-      <strong>Como funciona?</strong><br><br>
-      O widget lê diretamente o arquivo JSON criado pela extensão no seu repositório GitHub e renderiza automaticamente os seus highlights no site.
-    </div>
+  <section>
+    <h2>O que você precisa saber</h2>
+    <p style="margin-bottom: 24px;">Dúvidas comuns sobre como o Eugrifo funciona nos bastidores.</p>
 
-    <div class="note">
-      <div class="note-title">⚠️ Sobre a visibilidade dos highlights</div>
-      <p>O EuGrifo utiliza um arquivo JSON público como fonte de dados.</p>
-      <p>Na prática, qualquer pessoa que consiga visualizar seus highlights no site também poderá visualizar exatamente o mesmo conteúdo diretamente no GitHub.</p>
-      <p>Isso simplifica a instalação, elimina a necessidade de servidores e permite que você mantenha controle total sobre seus próprios dados.</p>
-    </div>
+    <details>
+      <summary>Quem pode ver meus grifos?</summary>
+      <p>O seu arquivo JSON de dados é público. Na prática, qualquer pessoa que consiga ver os highlights no seu site também pode vê-los visitando seu repositório no GitHub. Essa transparência é o que permite o sistema funcionar de graça e sem servidores.</p>
+    </details>
 
-    <div class="note">
-      <div class="note-title">⚠️ Sobre o estilo visual dos highlights</div>
-      <p>O widget instalado no seu site possui um estilo visual básico pré-definido.</p>
-      <p>Porém, ele irá assumir características específicas — como cores, tipografias, botões — do estilo visual do seu site.</p>
-    </div>
+    <details>
+      <summary>Posso mudar o visual do widget no meu site?</summary>
+      <p>O widget é inteligente e herda as fontes, tamanhos e cores automaticamente do tema do seu site para parecer nativo. Se você souber CSS, pode sobrescrever as variáveis raiz dele pelo código do seu próprio site.</p>
+    </details>
 
-     <div class="note">
-      <div class="note-title">⚠️ Sobre atualizações</div>
-      <p>Eventualmente atualizações serão feitas para melhorar o widget e também a extensão.</p>
-      <p>As atualização do widget ficará visível na página onde você hospedar os destaques em seu site.</p>
-      <p>As atualizações da extensão serão notificadas na extensão e poderão ser conferidas e aplicadas em Configurações > Aparência > Tema da Extensão.</p>  
-      <p>Você pode acompanhar os <em>logs</em> com atualizações na aba Log da extensão.</p>     
-    </div>
+    <details>
+      <summary>Como funcionam as atualizações?</summary>
+      <p>O código visual do widget é atualizado automaticamente para o seu site via nuvem. Já as melhorias na extensão serão notificadas diretamente no menu da extensão, e você poderá aplicar a atualização na aba "Aparência", além de ler as novidades na aba "Logs".</p>
+    </details>
   </section>
 
 </main>
