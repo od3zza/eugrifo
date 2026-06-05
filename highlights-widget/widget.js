@@ -1,5 +1,5 @@
 /*!
- * eugrifo v1.0
+ * eugrifo v1.0.3
  */
 
 (function () {
