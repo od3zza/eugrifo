@@ -1,6 +1,7 @@
 /*!
- * eugrifo — Highlights Widget  v5.0
+ * eugrifo v1.0
  */
+
 (function () {
   'use strict';
 
