@@ -1,0 +1,8 @@
+=== LOG DE ATUALIZAÇÕES - EUGRIFO ===
+
+[05/06/2026]
+- O widget agora herda perfeitamente o CSS escuro dos sites!
+- Cache do CDN corrigido.
+
+[01/06/2026]
+- Lançamento da versão 4.0 do Eugrifo.
