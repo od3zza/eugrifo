@@ -19,7 +19,7 @@ O EuGrifo é uma extensão minimalista que usa o GitHub como banco de dados pess
 
 A configuração inicial leva menos de 2 minutos e requer apenas a criação de um repositório e um Token no GitHub.
 
-👉 **[Acesse o Guia de Instalação Rápida]([https://eugrifo.netlify.app/](https://od3zza.github.io/eugrifo/))**
+👉 **[Acesse o Guia de Instalação Rápida]([[https://eugrifo.netlify.app/](https://od3zza.github.io/eugrifo/)](https://od3zza.github.io/eugrifo/)**
 
 ---
 
