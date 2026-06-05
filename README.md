@@ -1,84 +1,45 @@
-# ✍️ EuGrifo
+# ✦ eugrifo
 
-EuGrifo é uma extensão para navegador que permite coletar, organizar e revisitar highlights da web em uma página pessoal.
+**Colete, organize e exiba destaques da web. Seus dados, seu repositório.**
 
-Salve trechos de artigos, pesquisas, referências, documentações ou qualquer conteúdo textual interessante para consultar quando quiser.
+O EuGrifo é uma extensão minimalista que transforma o seu GitHub em um banco de dados pessoal de leitura (*Web Clipping*). Sem servidores de terceiros, sem mensalidades e sem plataformas fechadas: **todo o conteúdo salvo pertence a você e fica sob seu controle.**
 
-A extensão nasceu da vontade de manter uma coleção própria de highlights sem depender de serviços pagos ou plataformas fechadas. Por isso, todo o conteúdo que você salva pertence a você: armazenamento, edição e backups ficam totalmente sob seu controle.
+---
 
-🌱 Em vez de espalhar anotações por diferentes aplicativos, o EuGrifo oferece uma forma simples de construir sua própria biblioteca de ideias, referências e aprendizados ao longo do tempo.
+## ✨ Principais Funcionalidades
 
-## 🚀 Instalação
+* **Captura Rápida:** Selecione qualquer texto na web, escolha uma cor, adicione uma nota e salve.
+* **Privacidade Total:** Os dados são salvos diretamente em um arquivo `.json` no seu próprio repositório público do GitHub.
+* **Dashboard Integrado:** Acesse a aba **Meus Grifos** na própria extensão para buscar, editar anotações e excluir destaques em tempo real.
+* **Widget para Sites (Bônus):** Exiba seus destaques automaticamente no seu blog, portfólio ou *Digital Garden* copiando e colando um snippet de código simples.
 
-1. Instale a extensão no navegador.
-2. Abra qualquer página da web.
-3. Clique no ícone da extensão.
-4. Faça a configuração inicial.
+---
 
-## 📖 Como usar
+## 🚀 Como Instalar e Configurar
 
-### ✨ Salvar um highlight
+A configuração inicial leva menos de 2 minutos e requer apenas a criação de um repositório e um Token no GitHub.
 
-1. Acesse a página que deseja na web.
-2. Selecione o trecho do texto que quer guardar.
-3. Clique no ícone da extensão.
-4. Pressione **Salvar Highlight**.
-5. Adicione tags ou observações (opcional).
+👉 **[Acesse o Guia de Instalação Rápida](https://eugrifo.netlify.app/)**
 
-✅ Pronto. O conteúdo será adicionado à sua biblioteca.
+---
 
-### 🏷️ Organizar conteúdo
+## 📖 Como Usar
 
-Utilize tags para agrupar páginas por tema:
+1. Selecione um trecho de texto interessante em qualquer página.
+2. Clique no ícone da extensão do EuGrifo no navegador.
+3. Escolha a cor do destaque e adicione tags ou comentários (opcional).
+4. Clique em **Salvar**.
+5. Para consultar, pesquisar ou excluir um grifo depois, abra a extensão e clique em **🔖 Meus Grifos**.
 
-* design
-* programação
-* pesquisa
-* arte digital
-* inspiração
+---
 
-### 🔍 Encontrar conteúdo novamente
+## 💡 Casos de Uso
 
-Abra sua biblioteca e pesquise por:
+* Guardar trechos de artigos para ler ou consultar mais tarde.
+* Organizar pesquisas acadêmicas, referências de design ou documentações.
+* Construir um *Digital Garden* (Jardim Digital) alimentando seu site pessoal automaticamente.
+* Criar um arquivo de conhecimento 100% descentralizado e sob seu controle.
 
-* título
-* conteúdo da página
-* tags
-* observações
+---
 
-## 🔄 Fluxo básico
-
-```text
-💡 Encontrou algo interessante
-              ↓
-📌 Selecione o trecho
-              ↓
-🖱️ Clique na extensão
-              ↓
-💾 Salvar highlight
-              ↓
-🏷️ Adicionar tags (opcional)
-              ↓
-📚 Consultar depois
-```
-
-## 💡 Casos de uso
-
-* Guardar artigos para ler mais tarde
-* Criar uma biblioteca de referências
-* Organizar pesquisas acadêmicas
-* Salvar inspirações para projetos
-* Construir um arquivo pessoal de conhecimento
-
-## 🛠️ Dicas
-
-* Use tags consistentes.
-* Salve páginas assim que encontrá-las.
-* Organize conteúdos por tema.
-* Adicione observações para facilitar buscas futuras.
-
-## 🧪 Status
-
-Este é um projeto experimental em desenvolvimento.
-
-**Log #1 (v5.0)** — Publicação da extensão α para refinamento.
+*Baseado no projeto original [Uoshi Highlights](https://oieuoshi.vercel.app/blog/misc/porque-eu-fiz-uma-extensao-pra-salvar-textos-destacados).*
