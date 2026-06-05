@@ -1,8 +1,8 @@
 # ✦ eugrifo
 
-**Colete, organize e exiba destaques da web. Seus dados, seu repositório.**
+**Colete, organize e exiba destaques de textos da web. Seus dados, seu repositório.**
 
-O EuGrifo é uma extensão minimalista que transforma o seu GitHub em um banco de dados pessoal de leitura (*Web Clipping*). Sem servidores de terceiros, sem mensalidades e sem plataformas fechadas: **todo o conteúdo salvo pertence a você e fica sob seu controle.**
+O EuGrifo é uma extensão minimalista que usa o GitHub como banco de dados pessoal para suas leituras (*Web Clipping*). Sem servidores de terceiros, sem mensalidades e sem plataformas fechadas: **todo o conteúdo salvo pertence a você e fica sob seu controle.**
 
 ---
 
