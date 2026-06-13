@@ -77,7 +77,7 @@
       font-family: inherit;
       color: currentColor;
       line-height: 1.6;
-      max-width: 720px;
+      max-width: 100%;
     }
 
     .hw *, .hw *::before, .hw *::after {
