@@ -1,5 +1,5 @@
 /*!
- * eugrifo v1.0.3
+ * eugrifo v2.0.0
  */
 
 (function () {
@@ -15,7 +15,7 @@
     owner:  script?.getAttribute('data-owner')  || '',
     repo:   script?.getAttribute('data-repo')   || '',
     file:   script?.getAttribute('data-file')   || 'eugrifo-highlights.json',
-    token:  script?.getAttribute('data-token')  || '',
+    branch: script?.getAttribute('data-branch') || 'HEAD',
     target: script?.getAttribute('data-target') || 'eugrifo-widget',
     lang:   script?.getAttribute('data-lang')   || 'pt',
   };
@@ -301,6 +301,13 @@
       .replace(/"/g, '&quot;');
   }
 
+  function safeHref(url) {
+    try {
+      const u = new URL(url);
+      return (u.protocol === 'http:' || u.protocol === 'https:') ? u.href : '#';
+    } catch { return '#'; }
+  }
+
   function getDomain(url) {
     try { return new URL(url).hostname; } catch { return url; }
   }
@@ -318,29 +325,23 @@
   // ─── Fetch ────────────────────────────────────────────────────────────────────
 
   async function fetchData() {
-    const headers = { Accept: 'application/vnd.github.v3+json' };
-    if (cfg.token) headers.Authorization = `Bearer ${cfg.token}`;
-
-    const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.file}`;
-    const res = await fetch(url, { headers });
+    const enc = encodeURIComponent;
+    const path = cfg.file.split('/').map(enc).join('/');
+    const url = `https://raw.githubusercontent.com/${enc(cfg.owner)}/${enc(cfg.repo)}/${enc(cfg.branch)}/${path}`;
+    const res = await fetch(url, { cache: 'no-cache' });
 
     if (!res.ok) {
-      if (res.status === 404) throw new Error('Arquivo não encontrado. Verifique as configurações do widget.');
-      if (res.status === 401) throw new Error('Token inválido ou repositório privado sem token.');
+      if (res.status === 404) throw new Error('Arquivo não encontrado. O repositório precisa ser público e o caminho do arquivo estar correto.');
       throw new Error(`Erro ${res.status} ao buscar os destaques.`);
     }
-
-    const data = await res.json();
-    const decoded = new TextDecoder().decode(
-      Uint8Array.from(atob(data.content), c => c.charCodeAt(0))
-    );
-    return JSON.parse(decoded);
+    return res.json();
   }
 
   // ─── Render ───────────────────────────────────────────────────────────────────
 
   function render(root, raw) {
     const articles = Object.entries(raw)
+      .filter(([url, article]) => !url.startsWith('_') && article && Array.isArray(article.highlights))
       .map(([url, article]) => ({ url, ...article }))
       .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
@@ -400,7 +401,7 @@
         <article class="hw-card" data-idx="${idx}">
           <div class="hw-card-head">
             <a class="hw-card-title"
-               href="${esc(a.url)}"
+               href="${esc(safeHref(a.url))}"
                target="_blank"
                rel="noopener noreferrer"
                onclick="event.stopPropagation()">
