@@ -31,7 +31,7 @@ TODO - CAPTURAS DE TELA — Pra lembrar > (1280×800):
 
 ### Pela Chrome Web Store
 
-Baixe a extensão na [Chrome Web Store]([../../releases](https://chromewebstore.google.com/detail/eugrifo/eakhjmiedobghnnbnnoakbppialnhihi) e faça a instalação.
+Baixe a extensão na [Chrome Web Store](https://chromewebstore.google.com/detail/eugrifo/eakhjmiedobghnnbnnoakbppialnhihi) e faça a instalação.
 
 ## Como usar
 
