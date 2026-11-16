@@ -31,14 +31,7 @@ TODO - CAPTURAS DE TELA — Pra lembrar > (1280×800):
 
 ### Pela Chrome Web Store
 
-> Em breve. O link será adicionado aqui quando a extensão for publicada.
-
-### Manualmente (modo desenvolvedor)
-
-1. Baixe o arquivo `eugrifo-extension-x.y.z.zip` na página de [Releases](../../releases) e descompacte (ou clone o repositório e use a pasta `extension/`).
-2. Abra `chrome://extensions` e ative o **Modo do desenvolvedor**.
-3. Clique em **Carregar sem compactação** e escolha a pasta descompactada.
-4. Fixe o ícone da extensão na barra do navegador para acessar o popup com um clique.
+Baixe a extensão na [Chrome Web Store]([../../releases](https://chromewebstore.google.com/detail/eugrifo/eakhjmiedobghnnbnnoakbppialnhihi) e faça a instalação.
 
 ## Como usar
 
